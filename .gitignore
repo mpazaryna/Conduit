@@ -10,6 +10,10 @@
 fetched/
 logs/
 
+# DocFX generated site
+docs/_site/
+docs/api/
+
 # User-specific files
 *.rsuser
 *.suo
