@@ -1,20 +1,20 @@
 - name: Roadmap
-  href: project/roadmap.md
+  href: project/roadmap.html
 - name: Milestones
   items:
     - name: Foundation
-      href: project/work/foundation/prd.md
+      href: project/work/foundation/prd.html
     - name: Multi-Source Ingestion
-      href: project/work/multi-source-ingestion/prd.md
+      href: project/work/multi-source-ingestion/prd.html
     - name: Data Transformation
-      href: project/work/data-transformation/prd.md
+      href: project/work/data-transformation/prd.html
     - name: Production Hardening
-      href: project/work/production-hardening/prd.md
+      href: project/work/production-hardening/prd.html
 - name: Decisions
   items:
     - name: "ADR-000: The Score"
-      href: project/adr/ADR-000-the-score.md
+      href: project/adr/ADR-000-the-score.html
 - name: Devlog
   items:
     - name: "2026-03-28: Project Kickoff"
-      href: project/devlog/2026-Q1/2026-03-28-project-kickoff.md
+      href: project/devlog/2026-Q1/2026-03-28-project-kickoff.html

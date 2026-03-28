@@ -27,4 +27,4 @@ The pipeline pattern is domain-agnostic -- applicable to news aggregation, resea
 
 ## References
 
-- ADR-000: [The Score](.orchestra/adr/ADR-000-the-score.md)
+- ADR-000: [The Score](adr/ADR-000-the-score.md)
