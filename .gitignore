@@ -10,10 +10,9 @@
 fetched/
 logs/
 
-# Docusaurus build output
-docs/build/
-docs/.docusaurus/
-docs/node_modules/
+# DocFX generated site
+docs/_site/
+docs/api/
 
 # User-specific files
 *.rsuser

@@ -1,0 +1,31 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": ["**/*.csproj"],
+          "exclude": ["**/bin/**", "**/obj/**"],
+          "src": "../src"
+        }
+      ],
+      "dest": "api"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": ["api/**.yml", "api/index.md"]
+      },
+      {
+        "files": ["*.md"],
+        "exclude": ["_site/**"]
+      }
+    ],
+    "globalMetadata": {
+      "_appTitle": "Feedpipe",
+      "_appFooter": "Feedpipe - A .NET data pipeline for multi-source content aggregation",
+      "_enableSearch": true
+    },
+    "dest": "_site"
+  }
+}
