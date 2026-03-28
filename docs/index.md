@@ -26,7 +26,10 @@ dotnet test
 
 ## Documentation
 
-- **API Reference** -- generated from XML doc comments (see API Reference tab)
-- **Roadmap** -- project vision, milestones, and status (see Project tab)
-- **Decisions** -- architecture decision records
-- **Devlog** -- development journal
+- [Roadmap](../.orchestra/roadmap.md) -- project vision, milestones, and status
+- [Foundation Milestone](../.orchestra/work/foundation/prd.md) -- project structure and conventions (Done)
+- [Multi-Source Ingestion](../.orchestra/work/multi-source-ingestion/prd.md) -- pluggable source adapters
+- [Data Transformation](../.orchestra/work/data-transformation/prd.md) -- enrichment and dedup
+- [Production Hardening](../.orchestra/work/production-hardening/prd.md) -- resilience, observability, deployment
+- [ADR-000: The Score](../.orchestra/adr/ADR-000-the-score.md) -- founding architecture decision
+- [Project Kickoff Devlog](../.orchestra/devlog/2026-Q1/2026-03-28-project-kickoff.md) -- development journal
