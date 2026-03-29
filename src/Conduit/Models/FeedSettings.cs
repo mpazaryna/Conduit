@@ -38,7 +38,7 @@ public class SourceSettings
 public class AppSettings
 {
     /// <summary>Directory where output JSON files are written.</summary>
-    public string OutputDir { get; init; } = "fetched";
+    public string OutputDir { get; init; } = "data";
 
     /// <summary>Directory where Serilog writes daily rolling log files.</summary>
     public string LogsDir { get; init; } = "logs";

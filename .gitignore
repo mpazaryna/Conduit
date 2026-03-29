@@ -7,7 +7,6 @@
 .env
 
 # App output directories
-fetched/
 logs/
 
 # DocFX generated site

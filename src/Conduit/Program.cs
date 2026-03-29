@@ -73,7 +73,7 @@ foreach (var source in appSettings.Sources)
     var items = await adapter.IngestAsync(source.Location);
     if (items.Count > 0)
     {
-        await writer.WriteAsync(items, source.Name);
+        await writer.WriteAsync(items, source.Type, source.Name);
     }
 }
 

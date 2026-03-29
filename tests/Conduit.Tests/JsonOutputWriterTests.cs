@@ -2,7 +2,8 @@
 // JsonOutputWriter Tests
 //
 // Unit tests for the JSON file writing logic. These tests verify that
-// JsonOutputWriter correctly serializes records and manages output files.
+// JsonOutputWriter correctly serializes records, organizes output by
+// source type, and manages output files.
 //
 // Each test creates a unique temporary directory (via Guid) and cleans
 // it up in Dispose().
@@ -40,17 +41,17 @@ public class JsonOutputWriterTests : IDisposable
     }
 
     [Fact]
-    public async Task WriteAsync_CreatesOutputDirectory()
+    public async Task WriteAsync_CreatesSourceTypeSubdirectory()
     {
         var writer = new JsonOutputWriter(_tempDir, NullLogger<JsonOutputWriter>.Instance);
 
-        await writer.WriteAsync([], "test-source");
+        await writer.WriteAsync([], "rss", "test-source");
 
-        Assert.True(Directory.Exists(_tempDir));
+        Assert.True(Directory.Exists(Path.Combine(_tempDir, "rss")));
     }
 
     [Fact]
-    public async Task WriteAsync_WritesJsonFile()
+    public async Task WriteAsync_WritesJsonFileInTypeDirectory()
     {
         var writer = new JsonOutputWriter(_tempDir, NullLogger<JsonOutputWriter>.Instance);
         var items = new List<FeedItem>
@@ -58,9 +59,9 @@ public class JsonOutputWriterTests : IDisposable
             new("Test Title", "https://example.com", "A description", new DateTime(2024, 1, 1))
         };
 
-        await writer.WriteAsync(items, "test-source");
+        await writer.WriteAsync(items, "rss", "test-source");
 
-        var files = Directory.GetFiles(_tempDir, "*.json");
+        var files = Directory.GetFiles(Path.Combine(_tempDir, "rss"), "*.json");
         Assert.Single(files);
     }
 
@@ -73,9 +74,9 @@ public class JsonOutputWriterTests : IDisposable
             new("Test Title", "https://example.com", "A description", new DateTime(2024, 1, 1))
         };
 
-        await writer.WriteAsync(items, "test-source");
+        await writer.WriteAsync(items, "rss", "test-source");
 
-        var file = Directory.GetFiles(_tempDir, "*.json").Single();
+        var file = Directory.GetFiles(Path.Combine(_tempDir, "rss"), "*.json").Single();
         var json = await File.ReadAllTextAsync(file);
         var deserialized = JsonSerializer.Deserialize<List<FeedItem>>(json);
 
@@ -90,9 +91,9 @@ public class JsonOutputWriterTests : IDisposable
     {
         var writer = new JsonOutputWriter(_tempDir, NullLogger<JsonOutputWriter>.Instance);
 
-        await writer.WriteAsync([], "my-source");
+        await writer.WriteAsync([], "rss", "my-source");
 
-        var file = Path.GetFileName(Directory.GetFiles(_tempDir).Single());
+        var file = Path.GetFileName(Directory.GetFiles(Path.Combine(_tempDir, "rss")).Single());
         Assert.StartsWith("my-source_", file);
         Assert.EndsWith(".json", file);
     }

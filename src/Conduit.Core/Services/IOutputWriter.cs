@@ -19,14 +19,17 @@ namespace Conduit.Core.Services;
 public interface IOutputWriter
 {
     /// <summary>
-    /// Persists a collection of records under the given source name.
+    /// Persists a collection of records organized by source type and name.
     /// </summary>
     /// <param name="items">The records to persist.</param>
+    /// <param name="sourceType">
+    /// The adapter type (e.g., "rss", "edi834"). Used to organize output
+    /// into subdirectories by source type.
+    /// </param>
     /// <param name="sourceName">
-    /// A short identifier for the source (e.g., "hacker-news"). Used to
-    /// organize output -- in the JSON implementation, this becomes part
-    /// of the filename.
+    /// A short identifier for the source (e.g., "hacker-news"). Used in
+    /// the output filename.
     /// </param>
     /// <returns>A task that completes when the write operation finishes.</returns>
-    Task WriteAsync(List<FeedItem> items, string sourceName);
+    Task WriteAsync(List<FeedItem> items, string sourceType, string sourceName);
 }

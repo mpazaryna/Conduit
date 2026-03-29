@@ -30,7 +30,7 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("App"))
 builder.Services.AddHttpClient<ISourceAdapter, RssSourceAdapter>();
 builder.Services.AddSingleton<IOutputWriter, JsonOutputWriter>(sp =>
     new JsonOutputWriter(
-        builder.Configuration.GetSection("App")["OutputDir"] ?? "fetched",
+        builder.Configuration.GetSection("App")["OutputDir"] ?? "data",
         sp.GetRequiredService<ILogger<JsonOutputWriter>>()));
 
 builder.Services.AddHostedService<Worker>();

@@ -33,7 +33,7 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("App"))
 builder.Services.AddHttpClient<ISourceAdapter, RssSourceAdapter>();
 builder.Services.AddSingleton<IOutputWriter, JsonOutputWriter>(sp =>
     new JsonOutputWriter(
-        builder.Configuration.GetSection("App")["OutputDir"] ?? "fetched",
+        builder.Configuration.GetSection("App")["OutputDir"] ?? "data",
         sp.GetRequiredService<ILogger<JsonOutputWriter>>()));
 
 var app = builder.Build();
@@ -97,7 +97,7 @@ app.MapPost("/sources/{name}/ingest", async (string name, ISourceAdapter adapter
     var items = await adapter.IngestAsync(source.Location);
     if (items.Count > 0)
     {
-        await writer.WriteAsync(items, source.Name);
+        await writer.WriteAsync(items, source.Type, source.Name);
     }
 
     return Results.Ok(new { source = source.Name, itemCount = items.Count });
