@@ -17,13 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Conduit.Sources.Edi834/Conduit.Sources.Edi834.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="fixtures/**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="../../../src/Adapters/Conduit.Sources.Rss/Conduit.Sources.Rss.csproj" />
   </ItemGroup>
 
 </Project>

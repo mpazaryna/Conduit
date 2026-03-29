@@ -17,7 +17,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Conduit.Sources.Rss/Conduit.Sources.Rss.csproj" />
+    <ProjectReference Include="../../../src/Adapters/Conduit.Sources.Zotero/Conduit.Sources.Zotero.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="fixtures/**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Conduit/Conduit.csproj" />
+    <ProjectReference Include="../../src/App/Conduit/Conduit.csproj" />
   </ItemGroup>
 
 </Project>

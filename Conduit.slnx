@@ -1,18 +1,24 @@
 <Solution>
-  <Folder Name="/src/">
-    <Project Path="src/Conduit.Core/Conduit.Core.csproj" />
-    <Project Path="src/Conduit/Conduit.csproj" />
-    <Project Path="src/Conduit.Sources.Rss/Conduit.Sources.Rss.csproj" />
-    <Project Path="src/Conduit.Worker/Conduit.Worker.csproj" />
-    <Project Path="src/Conduit.Api/Conduit.Api.csproj" />
-    <Project Path="src/Conduit.Cli/Conduit.Cli.csproj" />
-    <Project Path="src/Conduit.Sources.Edi834/Conduit.Sources.Edi834.csproj" />
-    <Project Path="src/Conduit.Sources.Zotero/Conduit.Sources.Zotero.csproj" />
+  <Folder Name="/src/Core/">
+    <Project Path="src/Core/Conduit.Core/Conduit.Core.csproj" />
+  </Folder>
+  <Folder Name="/src/Adapters/">
+    <Project Path="src/Adapters/Conduit.Sources.Rss/Conduit.Sources.Rss.csproj" />
+    <Project Path="src/Adapters/Conduit.Sources.Edi834/Conduit.Sources.Edi834.csproj" />
+    <Project Path="src/Adapters/Conduit.Sources.Zotero/Conduit.Sources.Zotero.csproj" />
+  </Folder>
+  <Folder Name="/src/App/">
+    <Project Path="src/App/Conduit/Conduit.csproj" />
+    <Project Path="src/App/Conduit.Worker/Conduit.Worker.csproj" />
+    <Project Path="src/App/Conduit.Api/Conduit.Api.csproj" />
+    <Project Path="src/App/Conduit.Cli/Conduit.Cli.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Conduit.Tests/Conduit.Tests.csproj" />
-    <Project Path="tests/Conduit.Sources.Rss.Tests/Conduit.Sources.Rss.Tests.csproj" />
-    <Project Path="tests/Conduit.Sources.Edi834.Tests/Conduit.Sources.Edi834.Tests.csproj" />
-    <Project Path="tests/Conduit.Sources.Zotero.Tests/Conduit.Sources.Zotero.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Adapters/">
+    <Project Path="tests/Adapters/Conduit.Sources.Rss.Tests/Conduit.Sources.Rss.Tests.csproj" />
+    <Project Path="tests/Adapters/Conduit.Sources.Edi834.Tests/Conduit.Sources.Edi834.Tests.csproj" />
+    <Project Path="tests/Adapters/Conduit.Sources.Zotero.Tests/Conduit.Sources.Zotero.Tests.csproj" />
   </Folder>
 </Solution>
