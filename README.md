@@ -1,35 +1,41 @@
 # Conduit
 
-A production-ready data pipeline that ingests, transforms, and serves data from multiple source types. Built with .NET 10.
+[![CI](https://github.com/mpazaryna/Conduit/actions/workflows/ci.yml/badge.svg)](https://github.com/mpazaryna/Conduit/actions/workflows/ci.yml)
+[![Docs](https://github.com/mpazaryna/Conduit/actions/workflows/docs.yml/badge.svg)](https://github.com/mpazaryna/Conduit/actions/workflows/docs.yml)
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-purple)](https://dotnet.microsoft.com/download)
+[![Tests](https://img.shields.io/badge/tests-52%20passing-green)](https://github.com/mpazaryna/Conduit/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-## Prerequisites
+A domain-agnostic data pipeline that ingests, transforms, and serves data from multiple source types. Built with .NET 10.
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+## Source Adapters
+
+| Adapter | Format | Pattern |
+|---------|--------|---------|
+| RSS / Atom | XML feeds | Fetch from URL, auto-detect format |
+| EDI 834 | Healthcare enrollment | Read local file, parse X12 segments |
+| Zotero | Research library CSV | Read local file, enrich from arxiv API |
 
 ## Getting Started
 
 ```bash
-# Restore dependencies
 dotnet restore
-
-# Run the pipeline
-dotnet run --project src/Conduit
-
-# Run tests
+dotnet run --project src/App/Conduit
 dotnet test
 ```
 
 ## Configuration
 
-Sources and output paths are configured in `src/Conduit/appsettings.json`:
+Sources are configured in `src/App/Conduit/appsettings.json`:
 
 ```json
 {
   "App": {
-    "OutputDir": "fetched",
-    "LogsDir": "logs",
-    "Feeds": [
-      { "Url": "https://hnrss.org/frontpage", "Name": "hacker-news" }
+    "OutputDir": "data",
+    "Sources": [
+      { "Location": "https://hnrss.org/frontpage", "Name": "hacker-news", "Type": "rss" },
+      { "Location": "samples/edi834/sample-834.edi", "Name": "benefits-enrollment", "Type": "edi834" },
+      { "Location": "samples/zotero/paz-zotero.csv", "Name": "research-papers", "Type": "zotero" }
     ]
   }
 }
@@ -38,37 +44,64 @@ Sources and output paths are configured in `src/Conduit/appsettings.json`:
 ## Project Structure
 
 ```
-Conduit.slnx                        # Solution file
-Directory.Build.props                # Shared build settings (warnings, analysis)
-.editorconfig                        # C# coding style enforcement
 src/
-  Conduit.Core/                      # Shared models and interfaces
-  Conduit/                           # Console pipeline runner
-  Conduit.Worker/                    # Background service (timer-based)
-  Conduit.Api/                       # REST API (ASP.NET minimal APIs)
-  Conduit.Cli/                       # Command-line tool
+  Core/
+    Conduit.Core/                    Shared interfaces and models
+  Adapters/
+    Conduit.Sources.Rss/             RSS/Atom feed adapter
+    Conduit.Sources.Edi834/          EDI 834 healthcare adapter
+    Conduit.Sources.Zotero/          Zotero CSV + arxiv adapter
+  App/
+    Conduit/                         Console pipeline runner
+    Conduit.Worker/                  Background service (5 min schedule)
+    Conduit.Api/                     REST API (ASP.NET minimal APIs)
+    Conduit.Cli/                     CLI tool (search, list, stats)
 tests/
-  Conduit.Tests/                     # xUnit tests with mocked HTTP
+  Conduit.Tests/                     Output writer tests
+  Adapters/                          Adapter-specific tests
+data/                                Pipeline output (by source type)
+samples/                             Input test data
 ```
 
-## Output
+## How to Run
 
-- **fetched/** - JSON files with parsed data
-- **logs/** - Daily rolling log files via Serilog
+```bash
+# One-shot pipeline (all sources)
+dotnet run --project src/App/Conduit
+
+# Background service (every 5 minutes)
+dotnet run --project src/App/Conduit.Worker
+
+# REST API
+dotnet run --project src/App/Conduit.Api
+
+# CLI
+dotnet run --project src/App/Conduit.Cli -- list
+dotnet run --project src/App/Conduit.Cli -- search "AI"
+dotnet run --project src/App/Conduit.Cli -- stats
+```
 
 ## Key Patterns
 
-- **Dependency Injection** - Services registered in a DI container, resolved at runtime
-- **Interface + Implementation** - Services defined by contract, swappable
-- **appsettings.json** - Externalized configuration bound to typed settings classes
-- **ILogger\<T\>** - Typed, structured logging via Serilog with console and file sinks
-- **Record types** - Immutable data models with value equality
-- **Error handling** - Network and XML parse failures are logged and recovered from
-- **Code analysis** - TreatWarningsAsErrors + AnalysisLevel enforced via Directory.Build.props
+- **Adapter pattern** -- pluggable source types via `ISourceAdapter`
+- **Keyed DI services** -- runtime adapter resolution from config
+- **Concurrent processing** -- sources ingested in parallel via `Task.WhenAll`
+- **IPipelineRecord** -- domain-agnostic base type for all pipeline records
+- **Structured logging** -- Serilog with console and file sinks
+- **TDD** -- 52 tests across 4 projects, coverage reported in CI
 
 ## Tech Stack
 
 - .NET 10
 - Serilog (logging)
-- xUnit (testing)
-- Moq (mocking)
+- xUnit + Moq (testing)
+- coverlet (code coverage)
+- GitHub Actions (CI/CD)
+- DocFX (API documentation)
+
+## Documentation
+
+- [API Reference](https://mpazaryna.github.io/Conduit/) -- generated from XML doc comments
+- [Roadmap](.orchestra/roadmap.md) -- project vision and milestone status
+- [ADR-001](.orchestra/adr/ADR-001-domain-agnostic-pipeline.md) -- domain-agnostic architecture decision
+- [Learning Notes](.orchestra/devlog/2026-Q1/) -- .NET fundamentals, DI, testing, architecture
