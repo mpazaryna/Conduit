@@ -388,7 +388,7 @@ public class ZoteroSourceAdapterTests
         var content = """
             "Title","Author","DOI","Url","Abstract Note","Manual Tags"
             "Good Paper","Author A","10.1234/test","https://example.com","An abstract","tag1"
-            "Bad Row"
+            ,,,,,,
             "Another Good","Author B","","https://example.com/2","","tag2"
             """;
         await File.WriteAllTextAsync(malformedFile, content);
@@ -398,6 +398,7 @@ public class ZoteroSourceAdapterTests
             var adapter = CreateAdapter();
             var items = await adapter.IngestAsync(malformedFile);
 
+            // Row with all empty fields is skipped (no title and no URL)
             Assert.Equal(2, items.Count);
         }
         finally

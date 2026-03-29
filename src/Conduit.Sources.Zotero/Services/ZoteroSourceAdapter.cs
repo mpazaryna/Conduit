@@ -13,15 +13,16 @@ namespace Conduit.Sources.Zotero.Services;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Reads the standard Zotero CSV export format with columns: Title, Author,
-/// DOI, Url, Abstract Note, Manual Tags. For entries with arxiv URLs, the
-/// adapter calls the arxiv API to fetch the abstract.
+/// Reads the standard Zotero CSV export format, finding columns by header
+/// name (Title, Author, DOI, Url, Abstract Note, Manual Tags). This handles
+/// both minimal exports and full exports with 80+ columns.
 /// </para>
 /// <para>
-/// Access level is inferred from available metadata: papers with an abstract
-/// are marked <see cref="AccessLevel.Open"/>, papers with a DOI but no
-/// abstract are marked <see cref="AccessLevel.Paywalled"/>, and all others
-/// are marked <see cref="AccessLevel.Unknown"/>.
+/// For entries with arxiv URLs, the adapter calls the arxiv API to fetch
+/// the abstract. Access level is inferred: papers with an abstract are
+/// <see cref="AccessLevel.Open"/>, papers with a DOI but no abstract are
+/// <see cref="AccessLevel.Paywalled"/>, and all others are
+/// <see cref="AccessLevel.Unknown"/>.
 /// </para>
 /// </remarks>
 public partial class ZoteroSourceAdapter : ISourceAdapter
@@ -63,9 +64,13 @@ public partial class ZoteroSourceAdapter : ISourceAdapter
                 return [];
             }
 
+            // Strip BOM if present and build column index from header row
+            var headerLine = lines[0].TrimStart('\uFEFF');
+            var headers = ParseCsvLine(headerLine);
+            var columnMap = BuildColumnMap(headers);
+
             var records = new List<ResearchRecord>();
 
-            // Skip the header row
             for (var i = 1; i < lines.Length; i++)
             {
                 var line = lines[i].Trim();
@@ -75,20 +80,19 @@ public partial class ZoteroSourceAdapter : ISourceAdapter
                 }
 
                 var fields = ParseCsvLine(line);
-                if (fields.Count < 6)
+
+                var title = GetField(fields, columnMap, "Title");
+                var authors = GetField(fields, columnMap, "Author");
+                var doi = GetField(fields, columnMap, "DOI");
+                var url = GetField(fields, columnMap, "Url");
+                var abstractNote = GetField(fields, columnMap, "Abstract Note");
+                var tags = GetField(fields, columnMap, "Manual Tags");
+                var arxivId = ExtractArxivId(url);
+
+                if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(url))
                 {
-                    _logger.LogWarning("Skipping malformed row {Row} (expected 6 fields, got {Count})",
-                        i + 1, fields.Count);
                     continue;
                 }
-
-                var title = fields[0];
-                var authors = fields[1];
-                var doi = fields[2];
-                var url = fields[3];
-                var abstractNote = fields[4];
-                var tags = fields[5];
-                var arxivId = ExtractArxivId(url);
 
                 records.Add(new ResearchRecord(
                     Title: title,
@@ -119,6 +123,36 @@ public partial class ZoteroSourceAdapter : ISourceAdapter
     }
 
     /// <summary>
+    /// Builds a mapping from column name to index from the header row.
+    /// </summary>
+    private static Dictionary<string, int> BuildColumnMap(List<string> headers)
+    {
+        var map = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        for (var i = 0; i < headers.Count; i++)
+        {
+            var name = headers[i].Trim();
+            if (!string.IsNullOrWhiteSpace(name) && !map.ContainsKey(name))
+            {
+                map[name] = i;
+            }
+        }
+        return map;
+    }
+
+    /// <summary>
+    /// Gets a field value by column name, returning empty string if the
+    /// column doesn't exist or the row is too short.
+    /// </summary>
+    private static string GetField(List<string> fields, Dictionary<string, int> columnMap, string columnName)
+    {
+        if (!columnMap.TryGetValue(columnName, out var index) || index >= fields.Count)
+        {
+            return "";
+        }
+        return fields[index].Trim();
+    }
+
+    /// <summary>
     /// Parses a CSV line respecting quoted fields.
     /// </summary>
     internal static List<string> ParseCsvLine(string line)
@@ -135,7 +169,6 @@ public partial class ZoteroSourceAdapter : ISourceAdapter
             {
                 if (inQuotes && i + 1 < line.Length && line[i + 1] == '"')
                 {
-                    // Escaped quote
                     current.Append('"');
                     i++;
                 }
