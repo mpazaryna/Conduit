@@ -31,5 +31,5 @@ public interface IOutputWriter
     /// the output filename.
     /// </param>
     /// <returns>A task that completes when the write operation finishes.</returns>
-    Task WriteAsync(List<FeedItem> items, string sourceType, string sourceName);
+    Task WriteAsync(List<IPipelineRecord> items, string sourceType, string sourceName);
 }

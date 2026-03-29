@@ -18,6 +18,7 @@ using Conduit.Core.Services;
 using Conduit.Models;
 using Conduit.Services;
 using Conduit.Sources.Rss.Services;
+using Conduit.Sources.Edi834.Services;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -30,7 +31,15 @@ builder.Services.AddSerilog();
 builder.Services.AddOpenApi();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("App"));
-builder.Services.AddHttpClient<ISourceAdapter, RssSourceAdapter>();
+builder.Services.AddHttpClient();
+
+// Register adapters as keyed services
+builder.Services.AddKeyedScoped<ISourceAdapter>("rss", (sp, _) =>
+    new RssSourceAdapter(
+        sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
+        sp.GetRequiredService<ILogger<RssSourceAdapter>>()));
+builder.Services.AddKeyedScoped<ISourceAdapter, Edi834SourceAdapter>("edi834");
+
 builder.Services.AddSingleton<IOutputWriter, JsonOutputWriter>(sp =>
     new JsonOutputWriter(
         builder.Configuration.GetSection("App")["OutputDir"] ?? "data",
@@ -49,7 +58,7 @@ app.MapGet("/sources", (Microsoft.Extensions.Options.IOptions<AppSettings> setti
     .WithName("GetSources");
 
 // GET /sources/{name}/ingest -- Ingests a source live and returns the parsed items.
-app.MapGet("/sources/{name}/ingest", async (string name, ISourceAdapter adapter,
+app.MapGet("/sources/{name}/ingest", async (string name, IServiceProvider sp,
     Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
 {
     var source = settings.Value.Sources.FirstOrDefault(s =>
@@ -58,6 +67,7 @@ app.MapGet("/sources/{name}/ingest", async (string name, ISourceAdapter adapter,
     if (source is null)
         return Results.NotFound(new { error = $"Source '{name}' not found" });
 
+    var adapter = sp.GetRequiredKeyedService<ISourceAdapter>(source.Type);
     var items = await adapter.IngestAsync(source.Location);
     return Results.Ok(items);
 })
@@ -69,7 +79,7 @@ app.MapGet("/sources/{name}/items", (string name,
 {
     var outputDir = settings.Value.OutputDir;
     if (!Directory.Exists(outputDir))
-        return Results.Ok(Array.Empty<FeedItem>());
+        return Results.Ok(Array.Empty<IPipelineRecord>());
 
     var files = Directory.GetFiles(outputDir, $"{name}_*.json")
         .OrderByDescending(f => f)
@@ -85,7 +95,7 @@ app.MapGet("/sources/{name}/items", (string name,
 .WithName("GetSourceItems");
 
 // POST /sources/{name}/ingest -- Ingests a source and persists results to disk.
-app.MapPost("/sources/{name}/ingest", async (string name, ISourceAdapter adapter,
+app.MapPost("/sources/{name}/ingest", async (string name, IServiceProvider sp,
     IOutputWriter writer, Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
 {
     var source = settings.Value.Sources.FirstOrDefault(s =>
@@ -94,6 +104,7 @@ app.MapPost("/sources/{name}/ingest", async (string name, ISourceAdapter adapter
     if (source is null)
         return Results.NotFound(new { error = $"Source '{name}' not found" });
 
+    var adapter = sp.GetRequiredKeyedService<ISourceAdapter>(source.Type);
     var items = await adapter.IngestAsync(source.Location);
     if (items.Count > 0)
     {

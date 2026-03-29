@@ -6,9 +6,11 @@
     <Project Path="src/Conduit.Worker/Conduit.Worker.csproj" />
     <Project Path="src/Conduit.Api/Conduit.Api.csproj" />
     <Project Path="src/Conduit.Cli/Conduit.Cli.csproj" />
+    <Project Path="src/Conduit.Sources.Edi834/Conduit.Sources.Edi834.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Conduit.Tests/Conduit.Tests.csproj" />
     <Project Path="tests/Conduit.Sources.Rss.Tests/Conduit.Sources.Rss.Tests.csproj" />
+    <Project Path="tests/Conduit.Sources.Edi834.Tests/Conduit.Sources.Edi834.Tests.csproj" />
   </Folder>
 </Solution>

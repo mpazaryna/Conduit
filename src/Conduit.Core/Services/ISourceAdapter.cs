@@ -26,8 +26,8 @@ public interface ISourceAdapter
     /// or any identifier the adapter understands.
     /// </param>
     /// <returns>
-    /// A list of parsed <see cref="FeedItem"/> records. Returns an empty list
+    /// A list of parsed <see cref="IPipelineRecord"/> records. Returns an empty list
     /// if the ingestion fails or the source contains no data.
     /// </returns>
-    Task<List<FeedItem>> IngestAsync(string location);
+    Task<List<IPipelineRecord>> IngestAsync(string location);
 }

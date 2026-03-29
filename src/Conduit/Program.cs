@@ -11,12 +11,12 @@
 //
 // 2. Logging -- Serilog with Console + File sinks. Daily rolling log files.
 //
-// 3. Dependency Injection -- ServiceCollection wires up ISourceAdapter and
-//    IOutputWriter. AddHttpClient manages HttpClient lifecycle.
+// 3. Dependency Injection -- ServiceCollection wires up source adapters as
+//    keyed services, resolved by SourceSettings.Type at runtime.
 //
-// 4. Pipeline Loop -- Iterates over each configured source, ingests data,
-//    and writes non-empty results to disk. Errors in one source don't stop
-//    the others (handled inside the adapter).
+// 4. Pipeline Loop -- Iterates over each configured source, resolves the
+//    correct adapter by key, ingests data, and writes non-empty results
+//    to disk. Sources are processed concurrently with a semaphore.
 //
 // RUN WITH: dotnet run --project src/Conduit
 // -----------------------------------------------------------------------
@@ -29,6 +29,7 @@ using Conduit.Core.Services;
 using Conduit.Models;
 using Conduit.Services;
 using Conduit.Sources.Rss.Services;
+using Conduit.Sources.Edi834.Services;
 
 // -- Load configuration from appsettings.json --
 var configuration = new ConfigurationBuilder()
@@ -55,7 +56,15 @@ Log.Logger = new LoggerConfiguration()
 var services = new ServiceCollection();
 
 services.AddLogging(builder => builder.AddSerilog(Log.Logger));
-services.AddHttpClient<ISourceAdapter, RssSourceAdapter>();
+services.AddHttpClient();
+
+// Register adapters as keyed services, resolved by SourceSettings.Type
+services.AddKeyedScoped<ISourceAdapter>("rss", (sp, _) =>
+    new RssSourceAdapter(
+        sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
+        sp.GetRequiredService<ILogger<RssSourceAdapter>>()));
+services.AddKeyedScoped<ISourceAdapter, Edi834SourceAdapter>("edi834");
+
 services.AddSingleton<IOutputWriter>(sp =>
     new JsonOutputWriter(appSettings.OutputDir, sp.GetRequiredService<ILogger<JsonOutputWriter>>()));
 
@@ -63,19 +72,31 @@ var provider = services.BuildServiceProvider();
 
 // -- Run the pipeline --
 var logger = provider.GetRequiredService<ILogger<Program>>();
-var adapter = provider.GetRequiredService<ISourceAdapter>();
 var writer = provider.GetRequiredService<IOutputWriter>();
 
 logger.LogInformation("Starting pipeline");
 
-foreach (var source in appSettings.Sources)
+// Process sources concurrently with a semaphore to limit parallelism
+var semaphore = new SemaphoreSlim(4);
+var tasks = appSettings.Sources.Select(async source =>
 {
-    var items = await adapter.IngestAsync(source.Location);
-    if (items.Count > 0)
+    await semaphore.WaitAsync();
+    try
     {
-        await writer.WriteAsync(items, source.Type, source.Name);
+        var adapter = provider.GetRequiredKeyedService<ISourceAdapter>(source.Type);
+        var items = await adapter.IngestAsync(source.Location);
+        if (items.Count > 0)
+        {
+            await writer.WriteAsync(items, source.Type, source.Name);
+        }
     }
-}
+    finally
+    {
+        semaphore.Release();
+    }
+});
+
+await Task.WhenAll(tasks);
 
 logger.LogInformation("Pipeline complete");
 Log.CloseAndFlush();

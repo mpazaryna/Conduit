@@ -11,6 +11,7 @@
 using System.Net;
 using System.Text;
 using Microsoft.Extensions.Logging.Abstractions;
+using Conduit.Core.Models;
 using Conduit.Core.Services;
 using Conduit.Sources.Rss.Services;
 using Moq;
@@ -79,11 +80,12 @@ public class RssSourceAdapterTests
         var adapter = new RssSourceAdapter(httpClient, NullLogger<RssSourceAdapter>.Instance);
 
         var items = await adapter.IngestAsync("https://example.com/feed");
+        var feedItems = items.Cast<FeedItem>().ToList();
 
-        Assert.Equal("First Post", items[0].Title);
-        Assert.Equal("https://example.com/1", items[0].Link);
-        Assert.Equal("Second Post", items[1].Title);
-        Assert.Equal("https://example.com/2", items[1].Link);
+        Assert.Equal("First Post", feedItems[0].Title);
+        Assert.Equal("https://example.com/1", feedItems[0].Link);
+        Assert.Equal("Second Post", feedItems[1].Title);
+        Assert.Equal("https://example.com/2", feedItems[1].Link);
     }
 
     [Fact]
@@ -93,9 +95,10 @@ public class RssSourceAdapterTests
         var adapter = new RssSourceAdapter(httpClient, NullLogger<RssSourceAdapter>.Instance);
 
         var items = await adapter.IngestAsync("https://example.com/feed");
+        var feedItems = items.Cast<FeedItem>().ToList();
 
-        Assert.Equal("Hello world", items[0].Description);
-        Assert.Equal("No HTML here", items[1].Description);
+        Assert.Equal("Hello world", feedItems[0].Description);
+        Assert.Equal("No HTML here", feedItems[1].Description);
     }
 
     [Fact]
@@ -105,8 +108,9 @@ public class RssSourceAdapterTests
         var adapter = new RssSourceAdapter(httpClient, NullLogger<RssSourceAdapter>.Instance);
 
         var items = await adapter.IngestAsync("https://example.com/feed");
+        var feedItems = items.Cast<FeedItem>().ToList();
 
-        Assert.Equal(new DateTime(2024, 1, 1, 12, 0, 0), items[0].PublishedDate.ToUniversalTime());
+        Assert.Equal(new DateTime(2024, 1, 1, 12, 0, 0), feedItems[0].PublishedDate.ToUniversalTime());
     }
 
     [Fact]
@@ -145,9 +149,10 @@ public class RssSourceAdapterTests
         var items = await adapter.IngestAsync("https://example.com/feed");
 
         Assert.Single(items);
-        Assert.Equal("Only Title", items[0].Title);
-        Assert.Equal("", items[0].Link);
-        Assert.Equal("", items[0].Description);
-        Assert.Equal(DateTime.MinValue, items[0].PublishedDate);
+        var feedItem = (FeedItem)items[0];
+        Assert.Equal("Only Title", feedItem.Title);
+        Assert.Equal("", feedItem.Link);
+        Assert.Equal("", feedItem.Description);
+        Assert.Equal(DateTime.MinValue, feedItem.PublishedDate);
     }
 }

@@ -54,9 +54,9 @@ public class JsonOutputWriterTests : IDisposable
     public async Task WriteAsync_WritesJsonFileInTypeDirectory()
     {
         var writer = new JsonOutputWriter(_tempDir, NullLogger<JsonOutputWriter>.Instance);
-        var items = new List<FeedItem>
+        var items = new List<IPipelineRecord>
         {
-            new("Test Title", "https://example.com", "A description", new DateTime(2024, 1, 1))
+            new FeedItem("Test Title", "https://example.com", "A description", new DateTime(2024, 1, 1))
         };
 
         await writer.WriteAsync(items, "rss", "test-source");
@@ -69,9 +69,9 @@ public class JsonOutputWriterTests : IDisposable
     public async Task WriteAsync_FileContainsCorrectData()
     {
         var writer = new JsonOutputWriter(_tempDir, NullLogger<JsonOutputWriter>.Instance);
-        var items = new List<FeedItem>
+        var items = new List<IPipelineRecord>
         {
-            new("Test Title", "https://example.com", "A description", new DateTime(2024, 1, 1))
+            new FeedItem("Test Title", "https://example.com", "A description", new DateTime(2024, 1, 1))
         };
 
         await writer.WriteAsync(items, "rss", "test-source");

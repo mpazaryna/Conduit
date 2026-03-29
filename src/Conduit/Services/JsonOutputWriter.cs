@@ -41,7 +41,7 @@ public class JsonOutputWriter : IOutputWriter
     }
 
     /// <inheritdoc />
-    public async Task WriteAsync(List<FeedItem> items, string sourceType, string sourceName)
+    public async Task WriteAsync(List<IPipelineRecord> items, string sourceType, string sourceName)
     {
         var typeDir = Path.Combine(_outputDir, sourceType);
         Directory.CreateDirectory(typeDir);
@@ -49,7 +49,11 @@ public class JsonOutputWriter : IOutputWriter
         var filename = $"{sourceName}_{DateTime.Now:yyyy-MM-dd_HHmmss}.json";
         var path = Path.Combine(typeDir, filename);
 
-        var json = JsonSerializer.Serialize(items, JsonOptions);
+        // Serialize each record using its runtime type so domain-specific
+        // properties (e.g., FeedItem.Title, EnrollmentRecord.MemberName) are
+        // included in the output, not just the IPipelineRecord interface members.
+        var typedItems = items.Select(item => (object)item).ToList();
+        var json = JsonSerializer.Serialize(typedItems, JsonOptions);
         await File.WriteAllTextAsync(path, json);
 
         _logger.LogInformation("Wrote {Count} items to {Path}", items.Count, path);

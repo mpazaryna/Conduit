@@ -50,4 +50,14 @@ public record FeedItem(
     string Link,
     string Description,
     DateTime PublishedDate
-);
+) : IPipelineRecord
+{
+    /// <inheritdoc />
+    public string Id => Link;
+
+    /// <inheritdoc />
+    public DateTime Timestamp => PublishedDate;
+
+    /// <inheritdoc />
+    public string SourceType => "rss";
+}

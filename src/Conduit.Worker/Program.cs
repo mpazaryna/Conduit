@@ -11,6 +11,7 @@ using Conduit.Core.Services;
 using Conduit.Models;
 using Conduit.Services;
 using Conduit.Sources.Rss.Services;
+using Conduit.Sources.Edi834.Services;
 using Conduit.Worker;
 using Serilog;
 
@@ -27,7 +28,15 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddSerilog();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("App"));
-builder.Services.AddHttpClient<ISourceAdapter, RssSourceAdapter>();
+builder.Services.AddHttpClient();
+
+// Register adapters as keyed services
+builder.Services.AddKeyedScoped<ISourceAdapter>("rss", (sp, _) =>
+    new RssSourceAdapter(
+        sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
+        sp.GetRequiredService<ILogger<RssSourceAdapter>>()));
+builder.Services.AddKeyedScoped<ISourceAdapter, Edi834SourceAdapter>("edi834");
+
 builder.Services.AddSingleton<IOutputWriter, JsonOutputWriter>(sp =>
     new JsonOutputWriter(
         builder.Configuration.GetSection("App")["OutputDir"] ?? "data",

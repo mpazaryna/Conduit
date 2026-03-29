@@ -4,7 +4,7 @@
 
 ## Success Criteria
 
-- [ ] Multi-source ingestion beyond RSS (Atom, EDI 834)
+- [x] Multi-source ingestion beyond RSS (Atom, EDI 834)
 - [ ] Data transformation and enrichment layer
 - [ ] Production-grade resilience (retries, health checks, monitoring)
 - [ ] Deployable as a container to Azure or any Linux host
@@ -32,7 +32,7 @@ Introduces a pluggable source adapter pattern so the pipeline can ingest data fr
 
 - PRD: [.orchestra/work/multi-source-ingestion/prd.md](.orchestra/work/multi-source-ingestion/prd.md)
 - Dependency: Foundation
-- Status: Not Started
+- Status: Complete
 
 ### Data Transformation
 

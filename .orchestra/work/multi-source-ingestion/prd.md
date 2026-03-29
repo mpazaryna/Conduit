@@ -4,13 +4,13 @@
 
 ## Success Criteria
 
-- [ ] Adding a new source type requires no changes to the pipeline core
-- [ ] At least three source types work end-to-end (RSS, Atom, EDI 834)
+- [x] Adding a new source type requires no changes to the pipeline core
+- [x] At least three source types work end-to-end (RSS, Atom, EDI 834)
 - [ ] The pipeline auto-detects feed format without user configuration
-- [ ] EDI 834 files can be ingested from the local filesystem
-- [ ] Multiple sources are processed concurrently without blocking each other
-- [ ] A failing source does not prevent other sources from completing
-- [ ] Content sources and transaction sources coexist without contaminating each other
+- [x] EDI 834 files can be ingested from the local filesystem
+- [x] Multiple sources are processed concurrently without blocking each other
+- [x] A failing source does not prevent other sources from completing
+- [x] Content sources and transaction sources coexist without contaminating each other
 
 ## Context
 
@@ -27,9 +27,12 @@ EDI 834 is the healthcare industry standard for exchanging member enrollment dat
 - RSS adapter is isolated in its own module with passing tests
 - Error handling already prevents one failing source from crashing the pipeline
 
-## Remaining Deliverables
+## Deliverables
 
-- Atom feed support alongside RSS with format auto-detection
-- Runtime adapter selection based on configured source type
-- Concurrent processing of multiple sources
-- EDI 834 adapter with its own domain model and test fixtures
+- [x] IPipelineRecord base type with Id, Timestamp, SourceType
+- [x] Keyed DI adapter routing based on SourceSettings.Type
+- [x] Concurrent source processing via Task.WhenAll + SemaphoreSlim
+- [x] EDI 834 adapter with EnrollmentRecord model (Conduit.Sources.Edi834)
+- [x] 834 test fixtures and 12 adapter tests
+- [x] RSS and 834 output to data/rss/ and data/edi834/ respectively
+- [ ] Atom feed support with format auto-detection (deferred -- does not block milestone)

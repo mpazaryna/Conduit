@@ -14,10 +14,12 @@ namespace Conduit.Worker;
 /// once at startup, and it runs until the application shuts down.
 /// </para>
 ///
-/// <para><b>Primary constructor syntax (C# 12):</b></para>
+/// <para><b>Adapter routing:</b></para>
 /// <para>
-/// Parameters in the class declaration are injected by the DI container and
-/// available throughout the class without explicit field declarations.
+/// Each source's <c>Type</c> field is used as a key to resolve the correct
+/// <see cref="ISourceAdapter"/> from the DI container using keyed services.
+/// This allows the worker to process heterogeneous sources (RSS, EDI 834, etc.)
+/// without knowing the concrete adapter types.
 /// </para>
 ///
 /// <para><b>CancellationToken:</b></para>
@@ -27,12 +29,12 @@ namespace Conduit.Worker;
 /// cancellation tokens in .NET async code.
 /// </para>
 /// </remarks>
-/// <param name="adapter">The source adapter, resolved from DI.</param>
+/// <param name="serviceProvider">The DI service provider for resolving keyed adapters.</param>
 /// <param name="writer">The output writer, resolved from DI.</param>
 /// <param name="settings">Typed configuration from appsettings.json.</param>
 /// <param name="logger">Typed logger for this worker.</param>
 public class Worker(
-    ISourceAdapter adapter,
+    IServiceProvider serviceProvider,
     IOutputWriter writer,
     IOptions<AppSettings> settings,
     ILogger<Worker> logger) : BackgroundService
@@ -46,14 +48,26 @@ public class Worker(
         {
             logger.LogInformation("Pipeline starting");
 
-            foreach (var source in settings.Value.Sources)
+            var semaphore = new SemaphoreSlim(4);
+            var tasks = settings.Value.Sources.Select(async source =>
             {
-                var items = await adapter.IngestAsync(source.Location);
-                if (items.Count > 0)
+                await semaphore.WaitAsync(stoppingToken);
+                try
                 {
-                    await writer.WriteAsync(items, source.Type, source.Name);
+                    var adapter = serviceProvider.GetRequiredKeyedService<ISourceAdapter>(source.Type);
+                    var items = await adapter.IngestAsync(source.Location);
+                    if (items.Count > 0)
+                    {
+                        await writer.WriteAsync(items, source.Type, source.Name);
+                    }
                 }
-            }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
+
+            await Task.WhenAll(tasks);
 
             logger.LogInformation("Pipeline complete. Next run in 5 minutes");
             await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);

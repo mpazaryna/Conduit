@@ -56,7 +56,7 @@ public class RssSourceAdapter : ISourceAdapter
     }
 
     /// <inheritdoc />
-    public async Task<List<FeedItem>> IngestAsync(string location)
+    public async Task<List<IPipelineRecord>> IngestAsync(string location)
     {
         _logger.LogInformation("Ingesting RSS source: {Location}", location);
 
@@ -66,7 +66,7 @@ public class RssSourceAdapter : ISourceAdapter
             var doc = XDocument.Parse(response);
 
             var items = doc.Descendants("item")
-                .Select(item => new FeedItem(
+                .Select(item => (IPipelineRecord)new FeedItem(
                     Title: item.Element("title")?.Value ?? "(no title)",
                     Link: item.Element("link")?.Value ?? "",
                     Description: StripHtml(item.Element("description")?.Value ?? ""),
