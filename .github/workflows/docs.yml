@@ -31,11 +31,17 @@ jobs:
       - name: Install wkhtmltopdf
         run: sudo apt-get install -y wkhtmltopdf
 
-      - name: Build documentation
-        run: docfx docs/docfx.json
+      - name: Build metadata
+        run: docfx metadata docs/docfx.json
+
+      - name: Build site
+        run: docfx build docs/docfx.json
 
       - name: Build PDF
         run: docfx pdf docs/docfx.json || true
+
+      - name: List PDF output
+        run: find docs/_site/pdf -type f 2>/dev/null || echo "No PDF generated"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

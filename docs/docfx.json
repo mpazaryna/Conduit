@@ -25,9 +25,14 @@
       "_appTitle": "Conduit",
       "_appFooter": "Conduit - A .NET data pipeline for multi-source data processing",
       "_enableSearch": true,
-      "_appLogoPath": "",
-      "_appFaviconPath": ""
+      "_appLogoPath": "images/logo.svg",
+      "_appFaviconPath": "images/logo.svg"
     },
+    "resource": [
+      {
+        "files": ["images/**"]
+      }
+    ],
     "dest": "_site"
   },
   "pdf": {
@@ -41,7 +46,12 @@
       }
     ],
     "globalMetadata": {
-      "_appTitle": "Conduit API Reference"
+      "_appTitle": "Conduit API Reference",
+      "pdf": true,
+      "pdfFileName": "Conduit-API-Reference"
+    },
+    "wkhtmltopdf": {
+      "filePath": "/usr/bin/wkhtmltopdf"
     },
     "dest": "_site/pdf"
   }
