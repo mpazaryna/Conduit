@@ -18,12 +18,37 @@ The pipeline pattern is domain-agnostic -- applicable to news aggregation, resea
 
 ## Milestones
 
-| Material | Location | Status |
-|----------|----------|--------|
-| Foundation | .orchestra/work/foundation/prd.md | Done |
-| Multi-Source Ingestion | .orchestra/work/multi-source-ingestion/prd.md | Not Started |
-| Data Transformation | .orchestra/work/data-transformation/prd.md | Not Started |
-| Production Hardening | .orchestra/work/production-hardening/prd.md | Not Started |
+### Foundation
+
+Establishes the core project structure, DI, logging, testing, CI/CD, and documentation. Provides four entry points (console, worker, API, CLI) and a clean architecture that all subsequent milestones build on.
+
+- PRD: [.orchestra/work/foundation/prd.md](.orchestra/work/foundation/prd.md)
+- Dependency: None
+- Status: Complete
+
+### Multi-Source Ingestion
+
+Introduces a pluggable source adapter pattern so the pipeline can ingest data from any structured source -- RSS, Atom, and EDI 834 healthcare enrollment files. Proves the architecture works across content feeds and transactional healthcare data.
+
+- PRD: [.orchestra/work/multi-source-ingestion/prd.md](.orchestra/work/multi-source-ingestion/prd.md)
+- Dependency: Foundation
+- Status: Not Started
+
+### Data Transformation
+
+Adds a composable transformation layer between ingestion and storage. Handles deduplication, content enrichment, validation, and pluggable storage backends. Turns Feedpipe from a data fetcher into a data pipeline.
+
+- PRD: [.orchestra/work/data-transformation/prd.md](.orchestra/work/data-transformation/prd.md)
+- Dependency: Multi-Source Ingestion
+- Status: Not Started
+
+### Production Hardening
+
+Makes the pipeline reliable enough to run unattended in production. Adds retry policies, health checks, observability, containerized deployment, and graceful shutdown. Closes the gap between "it works" and "it runs."
+
+- PRD: [.orchestra/work/production-hardening/prd.md](.orchestra/work/production-hardening/prd.md)
+- Dependency: Data Transformation
+- Status: Not Started
 
 ## References
 
