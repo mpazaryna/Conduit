@@ -4,7 +4,7 @@
 
 ## Success Criteria
 
-- [ ] Multi-source ingestion beyond RSS (Atom, REST APIs)
+- [ ] Multi-source ingestion beyond RSS (Atom, EDI 834)
 - [ ] Data transformation and enrichment layer
 - [ ] Production-grade resilience (retries, health checks, monitoring)
 - [ ] Deployable as a container to Azure or any Linux host
