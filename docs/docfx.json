@@ -21,6 +21,11 @@
         "exclude": ["_site/**"]
       }
     ],
+    "resource": [
+      {
+        "files": ["images/**"]
+      }
+    ],
     "globalMetadata": {
       "_appTitle": "Conduit",
       "_appFooter": "Conduit - A .NET data pipeline for multi-source data processing",
@@ -28,31 +33,6 @@
       "_appLogoPath": "images/logo.svg",
       "_appFaviconPath": "images/logo.svg"
     },
-    "resource": [
-      {
-        "files": ["images/**"]
-      }
-    ],
     "dest": "_site"
-  },
-  "pdf": {
-    "content": [
-      {
-        "files": ["api/**.yml", "api/index.md"]
-      },
-      {
-        "files": ["*.md"],
-        "exclude": ["_site/**"]
-      }
-    ],
-    "globalMetadata": {
-      "_appTitle": "Conduit API Reference",
-      "pdf": true,
-      "pdfFileName": "Conduit-API-Reference"
-    },
-    "wkhtmltopdf": {
-      "filePath": "/usr/bin/wkhtmltopdf"
-    },
-    "dest": "_site/pdf"
   }
 }
