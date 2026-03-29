@@ -30,13 +30,20 @@ jobs:
       - name: Generate coverage report
         run: |
           dotnet tool install -g dotnet-reportgenerator-globaltool
-          reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coverage-report" -reporttypes:"MarkdownSummaryGithub;Cobertura"
+          reportgenerator -reports:"**/coverage.cobertura.xml" -targetdir:"coverage-report" -reporttypes:"MarkdownSummaryGithub;Cobertura" || true
+          ls -la coverage-report/ || true
 
       - name: Publish coverage summary
         if: always()
         run: |
           echo "## Test Coverage" >> $GITHUB_STEP_SUMMARY
-          cat coverage-report/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
+          if [ -f coverage-report/SummaryGithub.md ]; then
+            cat coverage-report/SummaryGithub.md >> $GITHUB_STEP_SUMMARY
+          elif ls coverage-report/*.md 1>/dev/null 2>&1; then
+            cat coverage-report/*.md >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Coverage report not generated." >> $GITHUB_STEP_SUMMARY
+          fi
 
       - name: Upload coverage report
         if: always()
