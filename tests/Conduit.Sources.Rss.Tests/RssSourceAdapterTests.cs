@@ -12,11 +12,11 @@ using System.Net;
 using System.Text;
 using Microsoft.Extensions.Logging.Abstractions;
 using Conduit.Core.Services;
-using Conduit.Services;
+using Conduit.Sources.Rss.Services;
 using Moq;
 using Moq.Protected;
 
-namespace Conduit.Tests;
+namespace Conduit.Sources.Rss.Tests;
 
 /// <summary>
 /// Tests for <see cref="RssSourceAdapter"/> RSS parsing and error handling.

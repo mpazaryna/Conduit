@@ -17,6 +17,7 @@ using Conduit.Core.Models;
 using Conduit.Core.Services;
 using Conduit.Models;
 using Conduit.Services;
+using Conduit.Sources.Rss.Services;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()

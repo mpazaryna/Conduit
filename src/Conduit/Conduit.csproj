@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Conduit.Core/Conduit.Core.csproj" />
+    <ProjectReference Include="../Conduit.Sources.Rss/Conduit.Sources.Rss.csproj" />
   </ItemGroup>
 
   <ItemGroup>

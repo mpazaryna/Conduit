@@ -10,6 +10,7 @@
 using Conduit.Core.Services;
 using Conduit.Models;
 using Conduit.Services;
+using Conduit.Sources.Rss.Services;
 using Conduit.Worker;
 using Serilog;
 

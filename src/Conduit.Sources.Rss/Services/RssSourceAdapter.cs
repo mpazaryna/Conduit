@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Conduit.Core.Models;
 using Conduit.Core.Services;
 
-namespace Conduit.Services;
+namespace Conduit.Sources.Rss.Services;
 
 /// <summary>
 /// Ingests and parses RSS 2.0 feeds over HTTP.

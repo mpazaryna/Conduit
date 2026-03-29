@@ -28,6 +28,7 @@ using Serilog;
 using Conduit.Core.Services;
 using Conduit.Models;
 using Conduit.Services;
+using Conduit.Sources.Rss.Services;
 
 // -- Load configuration from appsettings.json --
 var configuration = new ConfigurationBuilder()
