@@ -4,9 +4,9 @@
 
 ## Success Criteria
 
-- [x] Multi-source ingestion beyond RSS (Atom, EDI 834)
+- [x] Multi-source ingestion beyond RSS (Atom, EDI 834, Zotero)
 - [ ] Data transformation and enrichment layer
-- [ ] Production-grade resilience (retries, health checks, monitoring)
+- [ ] Production readiness addressed continuously (see ADR-002)
 - [ ] Deployable as a container to Azure or any Linux host
 - [ ] Comprehensive test coverage and documentation
 
@@ -28,7 +28,7 @@ Establishes the core project structure, DI, logging, testing, CI/CD, and documen
 
 ### Multi-Source Ingestion
 
-Introduces a pluggable source adapter pattern so the pipeline can ingest data from any structured source -- RSS, Atom, and EDI 834 healthcare enrollment files. Proves the architecture works across content feeds and transactional healthcare data.
+Introduces a pluggable source adapter pattern so the pipeline can ingest data from any structured source -- RSS, Atom, EDI 834, and Zotero research libraries. Proves the architecture works across content feeds, transactional healthcare data, and hybrid local-file-plus-API sources.
 
 - PRD: [.orchestra/work/multi-source-ingestion/prd.md](.orchestra/work/multi-source-ingestion/prd.md)
 - Dependency: Foundation
@@ -42,14 +42,8 @@ Adds a composable transformation layer between ingestion and storage. Handles de
 - Dependency: Multi-Source Ingestion
 - Status: Not Started
 
-### Production Hardening
-
-Makes the pipeline reliable enough to run unattended in production. Adds retry policies, health checks, observability, containerized deployment, and graceful shutdown. Closes the gap between "it works" and "it runs."
-
-- PRD: [.orchestra/work/production-hardening/prd.md](.orchestra/work/production-hardening/prd.md)
-- Dependency: Data Transformation
-- Status: Not Started
-
 ## References
 
 - ADR-000: [The Score](adr/ADR-000-the-score.md)
+- ADR-001: [Domain-Agnostic Pipeline](adr/ADR-001-domain-agnostic-pipeline.md)
+- ADR-002: [Production Readiness is Continuous](adr/ADR-002-production-readiness-is-continuous.md)
