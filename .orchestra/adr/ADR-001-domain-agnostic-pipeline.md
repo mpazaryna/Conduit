@@ -12,7 +12,7 @@ The project started as "hello-dot-net" -- a .NET learning exercise that fetched 
 2. **Feedpipe** -- an RSS-specific pipeline with multi-project structure
 3. **Conduit** -- a domain-agnostic pipeline lab
 
-The trigger for the final rename was learning that the upcoming work on Jon's team involves EDI 834 healthcare enrollment data. The question became: should we build a separate 834-only project, or extend the existing pipeline? The answer was to extend -- because the pipeline pattern (ingest -> transform -> store) is identical regardless of whether the data is RSS articles, healthcare enrollments, log files, or PDFs.
+The trigger for the final rename was the need to process EDI 834 healthcare enrollment data alongside content feeds. The question became: should we build a separate 834-only project, or extend the existing pipeline? The answer was to extend -- because the pipeline pattern (ingest -> transform -> store) is identical regardless of whether the data is RSS articles, healthcare enrollments, log files, or PDFs.
 
 Keeping two separate projects would mean rebuilding DI, logging, testing, CI/CD, and project structure from scratch. Keeping one project forces the abstractions to be genuinely pluggable rather than theoretically pluggable.
 
@@ -50,7 +50,7 @@ Adding a new domain requires implementing an adapter and a domain model. It does
 
 - **One well-maintained project beats two half-finished ones.** The foundation (DI, CI, docs, testing) only needs to be built once.
 - **Forced generalization produces better abstractions.** If the adapter interface only needs to handle RSS, it's easy to accidentally bake in RSS assumptions. Adding 834 forces the interface to be genuinely source-agnostic.
-- **The lab grows with the developer.** New patterns learned on Jon's team can be brought back and implemented cleanly. Six months of .NET learning compounds in one place.
+- **The lab grows with the developer.** New patterns learned on real projects can be brought back and implemented cleanly. Six months of .NET learning compounds in one place.
 
 ## Consequences
 
