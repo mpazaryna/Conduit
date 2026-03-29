@@ -3,7 +3,8 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <!-- CA1707: Underscores in test method names are standard convention -->
-    <NoWarn>$(NoWarn);CA1707</NoWarn>
+    <!-- CA1707: Underscores in test names; CS1591: Missing XML docs on test methods -->
+    <NoWarn>$(NoWarn);CA1707;CS1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

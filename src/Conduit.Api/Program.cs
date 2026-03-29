@@ -1,38 +1,16 @@
 // -----------------------------------------------------------------------
-// Conduit API - REST Endpoints for Feed Data
+// Conduit API - REST Endpoints for Pipeline Data
 //
-// This is an ASP.NET Minimal API that exposes the feed pipeline over HTTP.
-// Minimal APIs are the modern .NET approach for building lightweight HTTP
-// services -- they use lambda expressions instead of controller classes.
+// ASP.NET Minimal API that exposes the pipeline over HTTP.
 //
 // ENDPOINTS:
-//   GET  /feeds                  -- List all configured feeds
-//   GET  /feeds/{name}/fetch     -- Fetch a feed live and return items
-//   GET  /feeds/{name}/items     -- Read previously fetched items from disk
-//   POST /feeds/{name}/fetch     -- Fetch a feed and save results to disk
-//
-// KEY CONCEPTS:
-//
-// 1. WebApplication.CreateBuilder() -- Similar to the Worker's host builder,
-//    but adds HTTP server capabilities (Kestrel), routing, and middleware.
-//
-// 2. Minimal API routing -- app.MapGet("/path", handler) maps a URL pattern
-//    to a lambda. Parameters are automatically bound from the route, query
-//    string, or DI container based on their type.
-//
-// 3. Results.Ok() / Results.NotFound() -- These are "typed results" that
-//    set the HTTP status code and serialize the response body as JSON.
-//
-// 4. Parameter injection in handlers -- ASP.NET inspects the lambda's
-//    parameters and resolves them: route values (string name), DI services
-//    (IFeedFetcher), and options (IOptions<AppSettings>).
-//
-// 5. OpenAPI -- app.MapOpenApi() serves the API specification at
-//    /openapi/v1.json in development mode. Tools like Swagger UI can
-//    consume this to generate interactive API documentation.
+//   GET  /sources                  -- List all configured sources
+//   GET  /sources/{name}/ingest    -- Ingest a source live and return items
+//   GET  /sources/{name}/items     -- Read previously ingested items from disk
+//   POST /sources/{name}/ingest    -- Ingest a source and save results to disk
 //
 // RUN WITH: dotnet run --project src/Conduit.Api
-// TEST WITH: curl http://localhost:5000/feeds
+// TEST WITH: curl http://localhost:5000/sources
 // -----------------------------------------------------------------------
 
 using Conduit.Core.Models;
@@ -51,11 +29,11 @@ builder.Services.AddSerilog();
 builder.Services.AddOpenApi();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("App"));
-builder.Services.AddHttpClient<IFeedFetcher, RssFeedFetcher>();
-builder.Services.AddSingleton<IFeedWriter, JsonFeedWriter>(sp =>
-    new JsonFeedWriter(
+builder.Services.AddHttpClient<ISourceAdapter, RssSourceAdapter>();
+builder.Services.AddSingleton<IOutputWriter, JsonOutputWriter>(sp =>
+    new JsonOutputWriter(
         builder.Configuration.GetSection("App")["OutputDir"] ?? "fetched",
-        sp.GetRequiredService<ILogger<JsonFeedWriter>>()));
+        sp.GetRequiredService<ILogger<JsonOutputWriter>>()));
 
 var app = builder.Build();
 
@@ -64,32 +42,28 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-// GET /feeds -- Returns the list of configured feed sources from appsettings.json.
-// The IOptions<AppSettings> parameter is resolved from DI automatically.
-app.MapGet("/feeds", (Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
-    settings.Value.Feeds)
-    .WithName("GetFeeds");
+// GET /sources -- Returns the list of configured sources from appsettings.json.
+app.MapGet("/sources", (Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
+    settings.Value.Sources)
+    .WithName("GetSources");
 
-// GET /feeds/{name}/fetch -- Fetches a feed live over HTTP and returns the parsed
-// items directly without saving to disk. Useful for previewing feed content.
-// The {name} route parameter is matched case-insensitively against configured feeds.
-app.MapGet("/feeds/{name}/fetch", async (string name, IFeedFetcher fetcher,
+// GET /sources/{name}/ingest -- Ingests a source live and returns the parsed items.
+app.MapGet("/sources/{name}/ingest", async (string name, ISourceAdapter adapter,
     Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
 {
-    var feed = settings.Value.Feeds.FirstOrDefault(f =>
-        string.Equals(f.Name, name, StringComparison.OrdinalIgnoreCase));
+    var source = settings.Value.Sources.FirstOrDefault(s =>
+        string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
 
-    if (feed is null)
-        return Results.NotFound(new { error = $"Feed '{name}' not found" });
+    if (source is null)
+        return Results.NotFound(new { error = $"Source '{name}' not found" });
 
-    var items = await fetcher.FetchAsync(feed.Url);
+    var items = await adapter.IngestAsync(source.Location);
     return Results.Ok(items);
 })
-.WithName("FetchFeed");
+.WithName("IngestSource");
 
-// GET /feeds/{name}/items -- Reads the most recently fetched JSON file from disk
-// for the given feed. Returns the stored items without making any network requests.
-app.MapGet("/feeds/{name}/items", (string name,
+// GET /sources/{name}/items -- Reads the most recently ingested items from disk.
+app.MapGet("/sources/{name}/items", (string name,
     Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
 {
     var outputDir = settings.Value.OutputDir;
@@ -101,34 +75,32 @@ app.MapGet("/feeds/{name}/items", (string name,
         .FirstOrDefault();
 
     if (files is null)
-        return Results.NotFound(new { error = $"No fetched data for '{name}'" });
+        return Results.NotFound(new { error = $"No ingested data for '{name}'" });
 
     var json = File.ReadAllText(files);
     var items = System.Text.Json.JsonSerializer.Deserialize<List<FeedItem>>(json);
     return Results.Ok(items);
 })
-.WithName("GetFeedItems");
+.WithName("GetSourceItems");
 
-// POST /feeds/{name}/fetch -- Fetches a feed and persists the results to disk.
-// Returns a summary with the feed name and item count. This is the endpoint
-// you would call from a scheduler or webhook to trigger a pipeline run.
-app.MapPost("/feeds/{name}/fetch", async (string name, IFeedFetcher fetcher,
-    IFeedWriter writer, Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
+// POST /sources/{name}/ingest -- Ingests a source and persists results to disk.
+app.MapPost("/sources/{name}/ingest", async (string name, ISourceAdapter adapter,
+    IOutputWriter writer, Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
 {
-    var feed = settings.Value.Feeds.FirstOrDefault(f =>
-        string.Equals(f.Name, name, StringComparison.OrdinalIgnoreCase));
+    var source = settings.Value.Sources.FirstOrDefault(s =>
+        string.Equals(s.Name, name, StringComparison.OrdinalIgnoreCase));
 
-    if (feed is null)
-        return Results.NotFound(new { error = $"Feed '{name}' not found" });
+    if (source is null)
+        return Results.NotFound(new { error = $"Source '{name}' not found" });
 
-    var items = await fetcher.FetchAsync(feed.Url);
+    var items = await adapter.IngestAsync(source.Location);
     if (items.Count > 0)
     {
-        await writer.WriteAsync(items, feed.Name);
+        await writer.WriteAsync(items, source.Name);
     }
 
-    return Results.Ok(new { feed = feed.Name, itemCount = items.Count });
+    return Results.Ok(new { source = source.Name, itemCount = items.Count });
 })
-.WithName("FetchAndSaveFeed");
+.WithName("IngestAndSaveSource");
 
 app.Run();

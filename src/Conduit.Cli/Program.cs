@@ -1,33 +1,13 @@
 // -----------------------------------------------------------------------
-// Conduit CLI - Command-Line Tool for Querying Fetched Data
+// Conduit CLI - Command-Line Tool for Querying Pipeline Output
 //
 // A read-only tool that works with the JSON files produced by the pipeline.
-// Unlike the other projects, this doesn't fetch from the network -- it
-// operates entirely on local data, making it fast and offline-capable.
+// Operates entirely on local data -- no network requests.
 //
 // COMMANDS:
-//   feedpipe search <term> [--dir <path>]     Search items by keyword
-//   feedpipe list [--dir <path>] [--limit <n>] List recent items
-//   feedpipe stats [--dir <path>]              Show fetch statistics
-//
-// BUILT WITH System.CommandLine:
-//
-// System.CommandLine is Microsoft's official CLI parsing library. It handles
-// argument parsing, help text generation, tab completion, and validation.
-// The pattern is:
-//   1. Define Options (--flag) and Arguments (positional values)
-//   2. Create Commands and attach options/arguments to them
-//   3. Set a handler (lambda) for each command
-//   4. Add commands to a RootCommand and invoke it
-//
-// This is analogous to Python's click or argparse libraries. The key
-// difference is that System.CommandLine is strongly typed -- option values
-// are parsed directly into their target types (string, int, etc.).
-//
-// NOTE: This project only depends on Conduit.Core (for the FeedItem model),
-// not on Conduit (the main app). It reads JSON files directly rather than
-// going through IFeedWriter. This is intentional -- the CLI is a lightweight
-// consumer of the pipeline's output, not a participant in the pipeline itself.
+//   conduit search <term> [--dir <path>]     Search items by keyword
+//   conduit list [--dir <path>] [--limit <n>] List recent items
+//   conduit stats [--dir <path>]              Show ingestion statistics
 //
 // RUN WITH: dotnet run --project src/Conduit.Cli -- list
 //           dotnet run --project src/Conduit.Cli -- search "AI"
@@ -39,22 +19,15 @@ using System.CommandLine.Invocation;
 using System.Text.Json;
 using Conduit.Core.Models;
 
-// JsonSerializerOptions with case-insensitive matching. This ensures
-// deserialization works regardless of whether the JSON uses PascalCase
-// (C# default) or camelCase (common in web APIs).
 var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-// Shared option used by all commands. Defining it once avoids duplication
-// and ensures consistent behavior across commands.
-var dirOption = new Option<string>("--dir", () => "fetched", "Directory containing fetched JSON files");
+var dirOption = new Option<string>("--dir", () => "fetched", "Directory containing output JSON files");
 
-var rootCommand = new RootCommand("Conduit CLI - search and filter fetched feed data");
+var rootCommand = new RootCommand("Conduit CLI - search and filter pipeline output");
 
 // ---- SEARCH COMMAND ----
-// Scans all JSON files in the directory for items matching the search term
-// in either the title or description (case-insensitive).
 var searchTerm = new Argument<string>("term", "Text to search for in titles and descriptions");
-var searchCommand = new Command("search", "Search fetched items by keyword") { searchTerm, dirOption };
+var searchCommand = new Command("search", "Search items by keyword") { searchTerm, dirOption };
 searchCommand.SetHandler((term, dir) =>
 {
     if (!Directory.Exists(dir))
@@ -88,10 +61,8 @@ searchCommand.SetHandler((term, dir) =>
 }, searchTerm, dirOption);
 
 // ---- LIST COMMAND ----
-// Shows items from the most recent fetch file, sorted by filename
-// (which includes a timestamp). The --limit option caps the output.
 var limitOption = new Option<int>("--limit", () => 10, "Number of items to show");
-var listCommand = new Command("list", "List recent fetched items") { dirOption, limitOption };
+var listCommand = new Command("list", "List recent items") { dirOption, limitOption };
 listCommand.SetHandler((dir, limit) =>
 {
     if (!Directory.Exists(dir))
@@ -106,14 +77,14 @@ listCommand.SetHandler((dir, limit) =>
 
     if (latestFile is null)
     {
-        Console.WriteLine("No fetched data found.");
+        Console.WriteLine("No data found.");
         return;
     }
 
     var json = File.ReadAllText(latestFile);
     var items = JsonSerializer.Deserialize<List<FeedItem>>(json, jsonOptions) ?? [];
 
-    Console.WriteLine($"Latest fetch: {Path.GetFileName(latestFile)}");
+    Console.WriteLine($"Latest output: {Path.GetFileName(latestFile)}");
     Console.WriteLine(new string('-', 60));
 
     foreach (var item in items.Take(limit))
@@ -127,9 +98,7 @@ listCommand.SetHandler((dir, limit) =>
 }, dirOption, limitOption);
 
 // ---- STATS COMMAND ----
-// Provides a quick summary of the fetched data directory: file count,
-// total items, and the resolved directory path.
-var statsCommand = new Command("stats", "Show fetch statistics") { dirOption };
+var statsCommand = new Command("stats", "Show ingestion statistics") { dirOption };
 statsCommand.SetHandler((dir) =>
 {
     if (!Directory.Exists(dir))
@@ -148,7 +117,7 @@ statsCommand.SetHandler((dir) =>
         totalItems += items.Count;
     }
 
-    Console.WriteLine($"Fetched files:  {files.Length}");
+    Console.WriteLine($"Output files:   {files.Length}");
     Console.WriteLine($"Total items:    {totalItems}");
     Console.WriteLine($"Directory:      {Path.GetFullPath(dir)}");
 }, dirOption);
