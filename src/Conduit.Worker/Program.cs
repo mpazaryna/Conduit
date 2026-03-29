@@ -12,6 +12,7 @@ using Conduit.Models;
 using Conduit.Services;
 using Conduit.Sources.Rss.Services;
 using Conduit.Sources.Edi834.Services;
+using Conduit.Sources.Zotero.Services;
 using Conduit.Worker;
 using Serilog;
 
@@ -36,6 +37,10 @@ builder.Services.AddKeyedScoped<ISourceAdapter>("rss", (sp, _) =>
         sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
         sp.GetRequiredService<ILogger<FeedSourceAdapter>>()));
 builder.Services.AddKeyedScoped<ISourceAdapter, Edi834SourceAdapter>("edi834");
+builder.Services.AddKeyedScoped<ISourceAdapter>("zotero", (sp, _) =>
+    new ZoteroSourceAdapter(
+        sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
+        sp.GetRequiredService<ILogger<ZoteroSourceAdapter>>()));
 
 builder.Services.AddSingleton<IOutputWriter, JsonOutputWriter>(sp =>
     new JsonOutputWriter(

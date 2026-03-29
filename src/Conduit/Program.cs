@@ -30,6 +30,7 @@ using Conduit.Models;
 using Conduit.Services;
 using Conduit.Sources.Rss.Services;
 using Conduit.Sources.Edi834.Services;
+using Conduit.Sources.Zotero.Services;
 
 // -- Load configuration from appsettings.json --
 var configuration = new ConfigurationBuilder()
@@ -64,6 +65,10 @@ services.AddKeyedScoped<ISourceAdapter>("rss", (sp, _) =>
         sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
         sp.GetRequiredService<ILogger<FeedSourceAdapter>>()));
 services.AddKeyedScoped<ISourceAdapter, Edi834SourceAdapter>("edi834");
+services.AddKeyedScoped<ISourceAdapter>("zotero", (sp, _) =>
+    new ZoteroSourceAdapter(
+        sp.GetRequiredService<IHttpClientFactory>().CreateClient(),
+        sp.GetRequiredService<ILogger<ZoteroSourceAdapter>>()));
 
 services.AddSingleton<IOutputWriter>(sp =>
     new JsonOutputWriter(appSettings.OutputDir, sp.GetRequiredService<ILogger<JsonOutputWriter>>()));

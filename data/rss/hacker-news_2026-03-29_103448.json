@@ -1,8 +1,17 @@
 [
   {
+    "Title": "Show HN: 2.7KB Zig WASM \u2013 live globe showing executions at 300 CF edges",
+    "Link": "https://mcpaas.live/globe",
+    "Description": "36 cities so far. Every visit lights up your dot.\n\nComments URL: https://news.ycombinator.com/item?id=47563325\nPoints: 4\n# Comments: 0",
+    "PublishedDate": "2026-03-29T10:14:22-04:00",
+    "Id": "https://mcpaas.live/globe",
+    "Timestamp": "2026-03-29T10:14:22-04:00",
+    "SourceType": "rss"
+  },
+  {
     "Title": "TSA lines are so out of control that travelers are hiring line-sitters",
     "Link": "https://www.washingtonpost.com/travel/2026/03/28/tsa-line-sitters/",
-    "Description": "Article URL: https://www.washingtonpost.com/travel/2026/03/28/tsa-line-sitters/\nComments URL: https://news.ycombinator.com/item?id=47563007\nPoints: 15\n# Comments: 7",
+    "Description": "Article URL: https://www.washingtonpost.com/travel/2026/03/28/tsa-line-sitters/\nComments URL: https://news.ycombinator.com/item?id=47563007\nPoints: 28\n# Comments: 16",
     "PublishedDate": "2026-03-29T09:32:25-04:00",
     "Id": "https://www.washingtonpost.com/travel/2026/03/28/tsa-line-sitters/",
     "Timestamp": "2026-03-29T09:32:25-04:00",
@@ -11,7 +20,7 @@
   {
     "Title": "Show HN: Sheet Ninja \u2013 Google Sheets as a CRUD Back End for Vibe Coders",
     "Link": "https://sheetninja.io",
-    "Description": "Article URL: https://sheetninja.io\nComments URL: https://news.ycombinator.com/item?id=47562288\nPoints: 43\n# Comments: 46",
+    "Description": "Article URL: https://sheetninja.io\nComments URL: https://news.ycombinator.com/item?id=47562288\nPoints: 46\n# Comments: 47",
     "PublishedDate": "2026-03-29T07:42:31-04:00",
     "Id": "https://sheetninja.io",
     "Timestamp": "2026-03-29T07:42:31-04:00",
@@ -20,7 +29,7 @@
   {
     "Title": "Miasma: A tool to trap AI web scrapers in an endless poison pit",
     "Link": "https://github.com/austin-weeks/miasma",
-    "Description": "Article URL: https://github.com/austin-weeks/miasma\nComments URL: https://news.ycombinator.com/item?id=47561819\nPoints: 92\n# Comments: 36",
+    "Description": "Article URL: https://github.com/austin-weeks/miasma\nComments URL: https://news.ycombinator.com/item?id=47561819\nPoints: 101\n# Comments: 48",
     "PublishedDate": "2026-03-29T06:10:12-04:00",
     "Id": "https://github.com/austin-weeks/miasma",
     "Timestamp": "2026-03-29T06:10:12-04:00",
@@ -29,7 +38,7 @@
   {
     "Title": "Overestimation of microplastics potentially caused by scientists\u0027 gloves",
     "Link": "https://news.umich.edu/nitrile-and-latex-gloves-may-cause-overestimation-of-microplastics-u-m-study-reveals/",
-    "Description": "Article URL: https://news.umich.edu/nitrile-and-latex-gloves-may-cause-overestimation-of-microplastics-u-m-study-reveals/\nComments URL: https://news.ycombinator.com/item?id=47561711\nPoints: 195\n# Comments: 73",
+    "Description": "Article URL: https://news.umich.edu/nitrile-and-latex-gloves-may-cause-overestimation-of-microplastics-u-m-study-reveals/\nComments URL: https://news.ycombinator.com/item?id=47561711\nPoints: 214\n# Comments: 79",
     "PublishedDate": "2026-03-29T05:46:58-04:00",
     "Id": "https://news.umich.edu/nitrile-and-latex-gloves-may-cause-overestimation-of-microplastics-u-m-study-reveals/",
     "Timestamp": "2026-03-29T05:46:58-04:00",
@@ -38,7 +47,7 @@
   {
     "Title": "Lat.md: Agent Lattice: a knowledge graph for your codebase, written in Markdown",
     "Link": "https://github.com/1st1/lat.md",
-    "Description": "Article URL: https://github.com/1st1/lat.md\nComments URL: https://news.ycombinator.com/item?id=47561496\nPoints: 49\n# Comments: 15",
+    "Description": "Article URL: https://github.com/1st1/lat.md\nComments URL: https://news.ycombinator.com/item?id=47561496\nPoints: 52\n# Comments: 15",
     "PublishedDate": "2026-03-29T04:59:52-04:00",
     "Id": "https://github.com/1st1/lat.md",
     "Timestamp": "2026-03-29T04:59:52-04:00",
@@ -47,7 +56,7 @@
   {
     "Title": "LinkedIn uses 2.4 GB RAM across two tabs",
     "Link": "https://news.ycombinator.com/item?id=47561489",
-    "Description": "https://ibb.co/fYQVfMWp\nhttps://ibb.co/MyTNnrGQ\n\nComments URL: https://news.ycombinator.com/item?id=47561489\nPoints: 96\n# Comments: 65",
+    "Description": "https://ibb.co/fYQVfMWp\nhttps://ibb.co/MyTNnrGQ\n\nComments URL: https://news.ycombinator.com/item?id=47561489\nPoints: 113\n# Comments: 76",
     "PublishedDate": "2026-03-29T04:58:24-04:00",
     "Id": "https://news.ycombinator.com/item?id=47561489",
     "Timestamp": "2026-03-29T04:58:24-04:00",
@@ -56,7 +65,7 @@
   {
     "Title": "What if AI doesn\u0027t need more RAM but better math?",
     "Link": "https://adlrocha.substack.com/p/adlrocha-what-if-ai-doesnt-need-more",
-    "Description": "Article URL: https://adlrocha.substack.com/p/adlrocha-what-if-ai-doesnt-need-more\nComments URL: https://news.ycombinator.com/item?id=47561297\nPoints: 95\n# Comments: 51",
+    "Description": "Article URL: https://adlrocha.substack.com/p/adlrocha-what-if-ai-doesnt-need-more\nComments URL: https://news.ycombinator.com/item?id=47561297\nPoints: 98\n# Comments: 57",
     "PublishedDate": "2026-03-29T04:18:55-04:00",
     "Id": "https://adlrocha.substack.com/p/adlrocha-what-if-ai-doesnt-need-more",
     "Timestamp": "2026-03-29T04:18:55-04:00",
@@ -65,7 +74,7 @@
   {
     "Title": "Show HN: Public transit systems as data \u2013 lines, stations, railcars, and history",
     "Link": "https://publictransit.systems",
-    "Description": "Article URL: https://publictransit.systems\nComments URL: https://news.ycombinator.com/item?id=47561132\nPoints: 27\n# Comments: 9",
+    "Description": "Article URL: https://publictransit.systems\nComments URL: https://news.ycombinator.com/item?id=47561132\nPoints: 29\n# Comments: 9",
     "PublishedDate": "2026-03-29T03:38:58-04:00",
     "Id": "https://publictransit.systems",
     "Timestamp": "2026-03-29T03:38:58-04:00",
@@ -74,7 +83,7 @@
   {
     "Title": "Alzheimer\u0027s disease mortality among taxi and ambulance drivers (2024)",
     "Link": "https://www.bmj.com/content/387/bmj-2024-082194",
-    "Description": "Article URL: https://www.bmj.com/content/387/bmj-2024-082194\nComments URL: https://news.ycombinator.com/item?id=47559481\nPoints: 162\n# Comments: 104",
+    "Description": "Article URL: https://www.bmj.com/content/387/bmj-2024-082194\nComments URL: https://news.ycombinator.com/item?id=47559481\nPoints: 167\n# Comments: 106",
     "PublishedDate": "2026-03-28T20:53:30-04:00",
     "Id": "https://www.bmj.com/content/387/bmj-2024-082194",
     "Timestamp": "2026-03-28T20:53:30-04:00",
@@ -92,7 +101,7 @@
   {
     "Title": "A laser-based process that enables adhesive-free paper packaging",
     "Link": "https://www.fraunhofer.de/en/press/research-news/2026/march-2026/sealing-paper-packaging-without-adhesives.html",
-    "Description": "Article URL: https://www.fraunhofer.de/en/press/research-news/2026/march-2026/sealing-paper-packaging-without-adhesives.html\nComments URL: https://news.ycombinator.com/item?id=47558782\nPoints: 95\n# Comments: 41",
+    "Description": "Article URL: https://www.fraunhofer.de/en/press/research-news/2026/march-2026/sealing-paper-packaging-without-adhesives.html\nComments URL: https://news.ycombinator.com/item?id=47558782\nPoints: 98\n# Comments: 43",
     "PublishedDate": "2026-03-28T18:50:49-04:00",
     "Id": "https://www.fraunhofer.de/en/press/research-news/2026/march-2026/sealing-paper-packaging-without-adhesives.html",
     "Timestamp": "2026-03-28T18:50:49-04:00",
@@ -110,7 +119,7 @@
   {
     "Title": "CSS is DOOMed",
     "Link": "https://nielsleenheer.com/articles/2026/css-is-doomed-rendering-doom-in-3d-with-css/",
-    "Description": "https://cssdoom.wtf/\n\nComments URL: https://news.ycombinator.com/item?id=47557960\nPoints: 403\n# Comments: 94",
+    "Description": "https://cssdoom.wtf/\n\nComments URL: https://news.ycombinator.com/item?id=47557960\nPoints: 406\n# Comments: 95",
     "PublishedDate": "2026-03-28T16:39:01-04:00",
     "Id": "https://nielsleenheer.com/articles/2026/css-is-doomed-rendering-doom-in-3d-with-css/",
     "Timestamp": "2026-03-28T16:39:01-04:00",
@@ -119,7 +128,7 @@
   {
     "Title": "Android\u2019s new sideload settings will carry over to new devices",
     "Link": "https://www.androidauthority.com/android-sideload-carry-over-3652845/",
-    "Description": "Article URL: https://www.androidauthority.com/android-sideload-carry-over-3652845/\nComments URL: https://news.ycombinator.com/item?id=47557901\nPoints: 121\n# Comments: 165",
+    "Description": "Article URL: https://www.androidauthority.com/android-sideload-carry-over-3652845/\nComments URL: https://news.ycombinator.com/item?id=47557901\nPoints: 124\n# Comments: 169",
     "PublishedDate": "2026-03-28T16:28:03-04:00",
     "Id": "https://www.androidauthority.com/android-sideload-carry-over-3652845/",
     "Timestamp": "2026-03-28T16:28:03-04:00",
@@ -128,7 +137,7 @@
   {
     "Title": "Further human \u002B AI \u002B proof assistant work on Knuth\u0027s \u0022Claude Cycles\u0022 problem",
     "Link": "https://twitter.com/BoWang87/status/2037648937453232504",
-    "Description": "Knuth Claude\u0027s Cycles note update: problem now fully solved, by LLMs - https://news.ycombinator.com/item?id=47306926 - March 2026 (2 comments)https://chatgpt.com/share/69aaab4b-888c-8003-9a02-d1df80f9c7...Claude\u0027s Cycles [pdf] - https://news.ycombinator.com/item?id=47230710 - March 2026 (362 comments)\n\nComments URL: https://news.ycombinator.com/item?id=47557166\nPoints: 228\n# Comments: 156",
+    "Description": "Knuth Claude\u0027s Cycles note update: problem now fully solved, by LLMs - https://news.ycombinator.com/item?id=47306926 - March 2026 (2 comments)https://chatgpt.com/share/69aaab4b-888c-8003-9a02-d1df80f9c7...Claude\u0027s Cycles [pdf] - https://news.ycombinator.com/item?id=47230710 - March 2026 (362 comments)\n\nComments URL: https://news.ycombinator.com/item?id=47557166\nPoints: 229\n# Comments: 157",
     "PublishedDate": "2026-03-28T14:38:59-04:00",
     "Id": "https://twitter.com/BoWang87/status/2037648937453232504",
     "Timestamp": "2026-03-28T14:38:59-04:00",
@@ -137,7 +146,7 @@
   {
     "Title": "OpenCiv1 \u2013 open-source rewrite of Civ1",
     "Link": "https://github.com/rajko-horvat/OpenCiv1",
-    "Description": "Article URL: https://github.com/rajko-horvat/OpenCiv1\nComments URL: https://news.ycombinator.com/item?id=47557064\nPoints: 167\n# Comments: 56",
+    "Description": "Article URL: https://github.com/rajko-horvat/OpenCiv1\nComments URL: https://news.ycombinator.com/item?id=47557064\nPoints: 168\n# Comments: 58",
     "PublishedDate": "2026-03-28T14:22:45-04:00",
     "Id": "https://github.com/rajko-horvat/OpenCiv1",
     "Timestamp": "2026-03-28T14:22:45-04:00",
@@ -146,25 +155,16 @@
   {
     "Title": "Founder of GitLab battles cancer by founding companies",
     "Link": "https://sytse.com/cancer/",
-    "Description": "Article URL: https://sytse.com/cancer/\nComments URL: https://news.ycombinator.com/item?id=47556729\nPoints: 1182\n# Comments: 225",
+    "Description": "Article URL: https://sytse.com/cancer/\nComments URL: https://news.ycombinator.com/item?id=47556729\nPoints: 1191\n# Comments: 230",
     "PublishedDate": "2026-03-28T13:39:49-04:00",
     "Id": "https://sytse.com/cancer/",
     "Timestamp": "2026-03-28T13:39:49-04:00",
     "SourceType": "rss"
   },
   {
-    "Title": "Linux is an interpreter",
-    "Link": "https://astrid.tech/2026/03/28/0/linux-is-an-interpreter/",
-    "Description": "Article URL: https://astrid.tech/2026/03/28/0/linux-is-an-interpreter/\nComments URL: https://news.ycombinator.com/item?id=47556359\nPoints: 219\n# Comments: 52",
-    "PublishedDate": "2026-03-28T12:59:34-04:00",
-    "Id": "https://astrid.tech/2026/03/28/0/linux-is-an-interpreter/",
-    "Timestamp": "2026-03-28T12:59:34-04:00",
-    "SourceType": "rss"
-  },
-  {
     "Title": "I decompiled the White House\u0027s new app",
     "Link": "https://thereallo.dev/blog/decompiling-the-white-house-app",
-    "Description": "Article URL: https://thereallo.dev/blog/decompiling-the-white-house-app\nComments URL: https://news.ycombinator.com/item?id=47555556\nPoints: 564\n# Comments: 202",
+    "Description": "Article URL: https://thereallo.dev/blog/decompiling-the-white-house-app\nComments URL: https://news.ycombinator.com/item?id=47555556\nPoints: 570\n# Comments: 203",
     "PublishedDate": "2026-03-28T11:37:17-04:00",
     "Id": "https://thereallo.dev/blog/decompiling-the-white-house-app",
     "Timestamp": "2026-03-28T11:37:17-04:00",
@@ -173,7 +173,7 @@
   {
     "Title": "AI overly affirms users asking for personal advice",
     "Link": "https://news.stanford.edu/stories/2026/03/ai-advice-sycophantic-models-research",
-    "Description": "https://arxiv.org/abs/2602.14270https://www.science.org/doi/10.1126/science.aec8352\n\nComments URL: https://news.ycombinator.com/item?id=47554773\nPoints: 694\n# Comments: 552",
+    "Description": "https://arxiv.org/abs/2602.14270https://www.science.org/doi/10.1126/science.aec8352\n\nComments URL: https://news.ycombinator.com/item?id=47554773\nPoints: 695\n# Comments: 555",
     "PublishedDate": "2026-03-28T10:08:33-04:00",
     "Id": "https://news.stanford.edu/stories/2026/03/ai-advice-sycophantic-models-research",
     "Timestamp": "2026-03-28T10:08:33-04:00",

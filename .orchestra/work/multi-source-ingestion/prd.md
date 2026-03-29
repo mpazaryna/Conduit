@@ -5,7 +5,7 @@
 ## Success Criteria
 
 - [x] Adding a new source type requires no changes to the pipeline core
-- [x] At least three source types work end-to-end (RSS, Atom, EDI 834)
+- [x] At least three source types work end-to-end (RSS, Atom, EDI 834, Zotero)
 - [x] The pipeline auto-detects feed format without user configuration
 - [x] EDI 834 files can be ingested from the local filesystem
 - [x] Multiple sources are processed concurrently without blocking each other
@@ -36,3 +36,5 @@ EDI 834 is the healthcare industry standard for exchanging member enrollment dat
 - [x] 834 test fixtures and 12 adapter tests
 - [x] RSS and 834 output to data/rss/ and data/edi834/ respectively
 - [x] Atom feed support with format auto-detection
+- [x] Zotero CSV adapter with arxiv API enrichment and access level detection
+- [x] 22 Zotero adapter tests and sample output in data/zotero/
