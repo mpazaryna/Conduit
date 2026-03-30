@@ -7,15 +7,29 @@ namespace Conduit.Core.Services;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each validator handles one record type. The <see cref="AppliesTo"/> guard
-/// prevents a validator from running against records it doesn't understand.
-/// The <see cref="Validate"/> method returns human-readable error messages —
-/// an empty list means the record is valid.
+/// <b>Guard + validate pattern.</b> Two methods instead of one: <see cref="AppliesTo"/>
+/// is the guard — it answers "is this validator relevant for this record?" without
+/// doing any real work. <see cref="Validate"/> is called only when <c>AppliesTo</c>
+/// returns <c>true</c>. This lets the pipeline hold a flat list of all validators
+/// and apply each one to each record without caring about types upfront.
 /// </para>
 /// <para>
-/// Validators live in <c>Conduit.Transforms</c> where adapter model references
-/// are available. This interface lives in <c>Conduit.Core</c> so the validation
-/// transform can depend on it without pulling in adapters.
+/// <b>Error accumulation, not fail-fast.</b> <see cref="Validate"/> returns all
+/// errors found, not just the first. When a bad EDI file arrives, you want to see
+/// every problem at once — not fix one error, resubmit, and discover the next.
+/// </para>
+/// <para>
+/// <b><c>IReadOnlyList&lt;string&gt;</c> not <c>IEnumerable&lt;string&gt;</c>.</b>
+/// Returning <c>IReadOnlyList</c> signals two things: (1) the result is fully
+/// materialized — no deferred execution, no side effects on iteration; (2) callers
+/// can check <c>Count == 0</c> efficiently without enumerating, which is a common
+/// idiom for "is this record valid?"
+/// </para>
+/// <para>
+/// <b>Dependency direction.</b> This interface lives in <c>Conduit.Core</c> so
+/// <c>ValidationTransform</c> (also in Core) can depend on it. The concrete
+/// validators (<c>FeedItemValidator</c>, etc.) live in <c>Conduit.Transforms</c>
+/// where the adapter model types are available. Core never references Transforms.
 /// </para>
 /// </remarks>
 public interface IRecordValidator

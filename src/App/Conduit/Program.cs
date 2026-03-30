@@ -36,6 +36,8 @@ var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .Build();
 
+// `??` is the null-coalescing operator. If GetSection().Get<>() returns null (missing config),
+// `?? throw` is a C# 7 expression-throw — it throws inline rather than requiring an if block.
 var appSettings = configuration.GetSection("App").Get<AppSettings>()
     ?? throw new InvalidOperationException("Missing 'App' section in appsettings.json");
 
@@ -71,8 +73,16 @@ var validators = provider.GetRequiredService<IReadOnlyList<IRecordValidator>>();
 
 logger.LogInformation("Starting pipeline");
 
-// Process sources concurrently with a semaphore to limit parallelism
+// SemaphoreSlim is a lightweight concurrency gate. Constructed with `4`, it allows
+// at most 4 sources to be ingested at the same time. Without this, a configuration
+// with 50 sources would fire 50 concurrent HTTP requests at startup.
+// `WaitAsync()` asynchronously acquires a slot; `Release()` in the finally block
+// frees it so the next source can proceed. The `try/finally` guarantees Release()
+// is always called even if the source throws.
 var semaphore = new SemaphoreSlim(4);
+
+// `Select(async source => ...)` creates a Task for each source without awaiting them yet.
+// The whole list of Tasks is collected first, then awaited together below with Task.WhenAll.
 var tasks = appSettings.Sources.Select(async source =>
 {
     await semaphore.WaitAsync();
@@ -113,6 +123,9 @@ var tasks = appSettings.Sources.Select(async source =>
     }
 });
 
+// Task.WhenAll() awaits all tasks concurrently, completing when every source finishes.
+// If any task threw an exception, WhenAll re-throws it here (as an AggregateException
+// if multiple tasks failed). This is the standard pattern for "fan-out then wait".
 await Task.WhenAll(tasks);
 
 logger.LogInformation("Pipeline complete");

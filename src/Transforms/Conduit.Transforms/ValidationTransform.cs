@@ -43,11 +43,19 @@ public class ValidationTransform : ITransform
 
         foreach (var record in records)
         {
+            // LINQ pipeline to collect all errors for this record:
+            // `.Where()` — keep only validators that declare themselves applicable to this record type.
+            // `.SelectMany()` — each validator returns a list of errors; SelectMany flattens those
+            //   lists into one sequence (e.g., [[err1, err2], [err3]] → [err1, err2, err3]).
+            // `.ToList()` — materializes the lazy query so we can check Count and store it.
             var errors = _validators
                 .Where(v => v.AppliesTo(record.Record))
                 .SelectMany(v => v.Validate(record.Record))
                 .ToList();
 
+            // All errors from all matching validators are collected before deciding.
+            // This "collect all" approach means a rejected record shows every problem at once,
+            // not just the first one — useful for debugging a bad data file.
             if (errors.Count == 0)
             {
                 valid.Add(record);
@@ -58,6 +66,7 @@ public class ValidationTransform : ITransform
             }
         }
 
+        // Only write if there's something to write. Avoids creating empty rejected files.
         if (rejected.Count > 0)
         {
             await _rejectedWriter.WriteAsync(rejected, _sourceType, _sourceName);
