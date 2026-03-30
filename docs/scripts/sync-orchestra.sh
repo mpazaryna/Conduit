@@ -5,6 +5,8 @@
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 DOCS="$REPO_ROOT/docs/docs"
 
+mkdir -p "$DOCS/milestones" "$DOCS/decisions" "$DOCS/devlog" "$DOCS/learning"
+
 add_frontmatter() {
   local file="$1"
   local title="$2"
