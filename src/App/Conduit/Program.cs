@@ -28,6 +28,7 @@ using Serilog;
 using Conduit.Core.Services;
 using Conduit.Models;
 using Conduit.Services;
+using Conduit.Transforms;
 
 // -- Load configuration from appsettings.json --
 var configuration = new ConfigurationBuilder()
@@ -64,7 +65,9 @@ var provider = services.BuildServiceProvider();
 var logger = provider.GetRequiredService<ILogger<Program>>();
 var writer = provider.GetRequiredService<IOutputWriter>();
 var transformedWriter = provider.GetRequiredService<ITransformedOutputWriter>();
+var rejectedWriter = provider.GetRequiredService<IRejectedOutputWriter>();
 var enrichmentTransforms = provider.GetRequiredService<IReadOnlyList<ITransform>>();
+var validators = provider.GetRequiredService<IReadOnlyList<IRecordValidator>>();
 
 logger.LogInformation("Starting pipeline");
 
@@ -95,8 +98,8 @@ var tasks = appSettings.Sources.Select(async source =>
             }
 
             // Transform with cross-run dedup and write enriched output
-            var pipeline = TransformPipeline.CreateForSource(
-                transformedWriter, source.Type, enrichmentTransforms);
+            var pipeline = PipelineFactory.CreateForSource(
+                transformedWriter, rejectedWriter, source.Type, source.Name, validators, enrichmentTransforms);
             var transformed = await pipeline.ExecuteAsync(items);
             if (transformed.Count > 0)
             {

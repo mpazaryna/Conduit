@@ -16,6 +16,7 @@
 using Conduit.Core.Services;
 using Conduit.Models;
 using Conduit.Services;
+using Conduit.Transforms;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -94,6 +95,7 @@ app.MapGet("/sources/{name}/items", (string name,
 // POST /sources/{name}/ingest -- Ingests a source, transforms, and persists results to disk.
 app.MapPost("/sources/{name}/ingest", async (string name, IServiceProvider sp,
     IOutputWriter writer, ITransformedOutputWriter transformedWriter,
+    IRejectedOutputWriter rejectedWriter,
     Microsoft.Extensions.Options.IOptions<AppSettings> settings) =>
 {
     var source = settings.Value.Sources.FirstOrDefault(s =>
@@ -119,8 +121,9 @@ app.MapPost("/sources/{name}/ingest", async (string name, IServiceProvider sp,
         }
 
         var enrichmentTransforms = sp.GetRequiredService<IReadOnlyList<ITransform>>();
-        var pipeline = TransformPipeline.CreateForSource(
-            transformedWriter, source.Type, enrichmentTransforms);
+        var validators = sp.GetRequiredService<IReadOnlyList<IRecordValidator>>();
+        var pipeline = PipelineFactory.CreateForSource(
+            transformedWriter, rejectedWriter, source.Type, source.Name, validators, enrichmentTransforms);
         var transformed = await pipeline.ExecuteAsync(items);
         if (transformed.Count > 0)
         {

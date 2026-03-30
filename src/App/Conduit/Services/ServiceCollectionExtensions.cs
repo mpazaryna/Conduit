@@ -63,6 +63,14 @@ public static class ServiceCollectionExtensions
             new ZoteroEnrichmentTransform()
         });
 
+        // Record validators (shared across all sources; each declares which type it handles)
+        services.AddSingleton<IReadOnlyList<IRecordValidator>>(new List<IRecordValidator>
+        {
+            new FeedItemValidator(),
+            new EnrollmentRecordValidator(),
+            new ResearchRecordValidator()
+        });
+
         return services;
     }
 }
