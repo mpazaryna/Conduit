@@ -201,6 +201,77 @@ public class IntegrationTests : IDisposable
     }
 
     [Fact]
+    public async Task EndToEnd_ValidationTransform_Splits_Valid_And_Invalid_To_Real_Dirs()
+    {
+        // Runs the full pipeline (validation → dedup → enrichment) against real output dirs.
+        // Run: dotnet test --filter EndToEnd_ValidationTransform_Splits_Valid_And_Invalid_To_Real_Dirs
+        // Then inspect: data/curated/edi834/ and data/rejected/edi834/
+        var baseDir = Path.Combine(
+            Directory.GetCurrentDirectory(), "..", "..", "..", "..", "..", "data");
+
+        var curatedDir = Path.Combine(baseDir, "curated");
+        var rejectedDir = Path.Combine(baseDir, "rejected");
+
+        var curatedWriter = new JsonTransformedOutputWriter(curatedDir,
+            NullLogger<JsonTransformedOutputWriter>.Instance);
+        var rejectedWriter = new JsonRejectedOutputWriter(rejectedDir,
+            NullLogger<JsonRejectedOutputWriter>.Instance);
+
+        var validators = new List<IRecordValidator>
+        {
+            new EnrollmentRecordValidator()
+        };
+
+        var pipeline = PipelineFactory.CreateForSource(
+            curatedWriter, rejectedWriter,
+            "edi834", "benefits-enrollment",
+            validators,
+            [new Edi834EnrichmentTransform()]);
+
+        var records = new List<IPipelineRecord>
+        {
+            // Valid: addition with correct codes
+            new EnrollmentRecord("SUB001", "Smith, Alice", "18", "021",
+                new DateTime(2026, 1, 1), null, "PLAN-A"),
+
+            // Valid: termination with end date after start date
+            new EnrollmentRecord("SUB002", "Jones, Bob", "01", "024",
+                new DateTime(2026, 1, 1), new DateTime(2026, 12, 31), "PLAN-B"),
+
+            // Invalid: unknown maintenance code
+            new EnrollmentRecord("SUB003", "Bad, Record", "18", "999",
+                new DateTime(2026, 1, 1), null, "PLAN-C"),
+
+            // Invalid: missing subscriber ID and member name
+            new EnrollmentRecord("", "", "18", "021",
+                new DateTime(2026, 1, 1), null, "PLAN-D"),
+
+            // Invalid: end date before start date
+            new EnrollmentRecord("SUB005", "Date, Problem", "18", "021",
+                new DateTime(2026, 6, 1), new DateTime(2026, 1, 1), "PLAN-E"),
+        };
+
+        var transformed = await pipeline.ExecuteAsync(records);
+
+        // Write curated output for valid records
+        if (transformed.Count > 0)
+            await curatedWriter.WriteAsync(transformed, "edi834", "benefits-enrollment");
+
+        // 2 valid, 3 invalid
+        Assert.Equal(2, transformed.Count);
+
+        var curatedFiles = Directory.GetFiles(Path.Combine(curatedDir, "edi834"), "*.json");
+        var rejectedFiles = Directory.GetFiles(Path.Combine(rejectedDir, "edi834"), "*.json");
+
+        Assert.NotEmpty(curatedFiles);
+        Assert.NotEmpty(rejectedFiles);
+
+        var rejectedJson = await File.ReadAllTextAsync(rejectedFiles[^1]);
+        using var doc = JsonDocument.Parse(rejectedJson);
+        Assert.Equal(3, doc.RootElement.GetArrayLength());
+    }
+
+    [Fact]
     public async Task EndToEnd_RejectedWriter_Writes_To_Data_Rejected()
     {
         // Writes to the real data/rejected/ directory so you can inspect the output.
