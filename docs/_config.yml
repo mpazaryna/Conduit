@@ -1,7 +1,0 @@
-title: Conduit
-description: A domain-agnostic data pipeline for multi-source content processing
-remote_theme: just-the-docs/just-the-docs@v0.10.1
-plugins:
-  - jekyll-remote-theme
-color_scheme: dark
-search_enabled: true
