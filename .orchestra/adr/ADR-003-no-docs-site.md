@@ -1,8 +1,8 @@
-# ADR-003: No External Documentation Site
+# ADR-003: Documentation Site Serves .orchestra/ Content Only
 
 **Date:** 2026-03-29
-**Status:** Active
-**Decision:** Conduit does not maintain a generated documentation site. All documentation lives in the repository.
+**Status:** Amended
+**Decision:** The docs site renders .orchestra/ markdown via Jekyll on GitHub Pages. No auto-generated API reference. The source of truth is always .orchestra/ -- the site is a read-only view.
 
 ## Context
 

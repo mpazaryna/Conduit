@@ -1,0 +1,71 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build docs from .orchestra/
+        run: |
+          mkdir -p docs/milestones docs/decisions docs/devlog docs/learning
+
+          cp .orchestra/roadmap.md docs/roadmap.md
+
+          cp .orchestra/work/foundation/prd.md docs/milestones/foundation.md
+          cp .orchestra/work/multi-source-ingestion/prd.md docs/milestones/multi-source-ingestion.md
+          cp .orchestra/work/data-transformation/prd.md docs/milestones/data-transformation.md
+
+          cp .orchestra/adr/ADR-000-the-score.md docs/decisions/adr-000-the-score.md
+          cp .orchestra/adr/ADR-001-domain-agnostic-pipeline.md docs/decisions/adr-001-domain-agnostic-pipeline.md
+          cp .orchestra/adr/ADR-002-production-readiness-is-continuous.md docs/decisions/adr-002-production-readiness-is-continuous.md
+          cp .orchestra/adr/ADR-003-no-docs-site.md docs/decisions/adr-003-no-docs-site.md
+
+          for f in .orchestra/devlog/2026-Q1/2026-03-2[89]-*.md; do
+            name=$(basename "$f" .md | sed 's/^2026-03-[0-9]*-//')
+            date=$(basename "$f" .md | grep -o '^2026-03-[0-9]*')
+            cp "$f" "docs/devlog/${date}-${name}.md"
+          done
+
+          for f in .orchestra/devlog/2026-Q1/*learning*.md; do
+            name=$(basename "$f" .md | sed 's/^2026-03-[0-9]*-learning-//')
+            cp "$f" "docs/learning/${name}.md"
+          done
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./docs
+          destination: ./_site
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build-docs
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
