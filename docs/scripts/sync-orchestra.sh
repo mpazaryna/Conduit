@@ -9,11 +9,12 @@ mkdir -p "$DOCS/milestones" "$DOCS/decisions" "$DOCS/devlog" "$DOCS/learning"
 
 add_frontmatter() {
   local file="$1"
-  local title="$2"
+  local label="$2"
   local position="$3"
   local dest="$4"
 
   echo "---" > "$dest"
+  echo "sidebar_label: \"$label\"" >> "$dest"
   echo "sidebar_position: $position" >> "$dest"
   echo "---" >> "$dest"
   echo "" >> "$dest"
@@ -23,6 +24,7 @@ add_frontmatter() {
 # Intro/landing
 cat > "$DOCS/index.md" << 'INTRO'
 ---
+sidebar_label: Home
 sidebar_position: 1
 slug: /
 ---
@@ -31,9 +33,33 @@ slug: /
 
 A domain-agnostic data pipeline for multi-source content processing. Built with .NET 10.
 
-Browse the sidebar for project documentation: roadmap, milestone PRDs, architecture decisions, development journal, and learning notes.
+## What's Here
 
-All content is sourced from the [.orchestra/](https://github.com/mpazaryna/Conduit/tree/main/.orchestra) directory in the repository.
+| Section | Description |
+|---------|-------------|
+| **Roadmap** | Project vision, milestones, and current status |
+| **Milestones** | PRDs for each phase -- what we're building and why |
+| **Decisions** | Architecture decision records -- the choices that shape the system |
+| **Devlog** | Development journal -- what happened, what changed, what we learned |
+| **Learning** | .NET study notes -- fundamentals, DI, testing, architecture, coverage |
+
+## Source Adapters
+
+| Adapter | Format | Status |
+|---------|--------|--------|
+| RSS / Atom | XML feeds (auto-detected) | Complete |
+| EDI 834 | Healthcare enrollment | Complete |
+| Zotero | Research library CSV + arxiv | Complete |
+
+## Quick Start
+
+```bash
+dotnet restore
+dotnet run --project src/App/Conduit
+dotnet test
+```
+
+All content is sourced from [.orchestra/](https://github.com/mpazaryna/Conduit/tree/main/.orchestra) in the repository.
 INTRO
 
 # Roadmap
@@ -45,27 +71,24 @@ add_frontmatter "$REPO_ROOT/.orchestra/work/multi-source-ingestion/prd.md" "Mult
 add_frontmatter "$REPO_ROOT/.orchestra/work/data-transformation/prd.md" "Data Transformation" 3 "$DOCS/milestones/data-transformation.md"
 
 # Decisions
-add_frontmatter "$REPO_ROOT/.orchestra/adr/ADR-000-the-score.md" "ADR-000" 1 "$DOCS/decisions/adr-000-the-score.md"
-add_frontmatter "$REPO_ROOT/.orchestra/adr/ADR-001-domain-agnostic-pipeline.md" "ADR-001" 2 "$DOCS/decisions/adr-001-domain-agnostic-pipeline.md"
-add_frontmatter "$REPO_ROOT/.orchestra/adr/ADR-002-production-readiness-is-continuous.md" "ADR-002" 3 "$DOCS/decisions/adr-002-production-readiness-is-continuous.md"
-add_frontmatter "$REPO_ROOT/.orchestra/adr/ADR-003-no-docs-site.md" "ADR-003" 4 "$DOCS/decisions/adr-003-no-docs-site.md"
+add_frontmatter "$REPO_ROOT/.orchestra/adr/ADR-000-the-score.md" "ADR-000: The Score" 1 "$DOCS/decisions/adr-000-the-score.md"
+add_frontmatter "$REPO_ROOT/.orchestra/adr/ADR-001-domain-agnostic-pipeline.md" "ADR-001: Domain-Agnostic" 2 "$DOCS/decisions/adr-001-domain-agnostic-pipeline.md"
+add_frontmatter "$REPO_ROOT/.orchestra/adr/ADR-002-production-readiness-is-continuous.md" "ADR-002: Continuous Readiness" 3 "$DOCS/decisions/adr-002-production-readiness-is-continuous.md"
+add_frontmatter "$REPO_ROOT/.orchestra/adr/ADR-003-no-docs-site.md" "ADR-003: Docs Strategy" 4 "$DOCS/decisions/adr-003-no-docs-site.md"
 
 # Devlog
-pos=1
-for f in "$REPO_ROOT"/.orchestra/devlog/2026-Q1/2026-03-28-*.md "$REPO_ROOT"/.orchestra/devlog/2026-Q1/2026-03-29-{pivot,source-isolation,multi-source,zotero,dropping}*.md; do
-  [ -f "$f" ] || continue
-  name=$(basename "$f" .md)
-  add_frontmatter "$f" "$name" $pos "$DOCS/devlog/$name.md"
-  pos=$((pos + 1))
-done
+add_frontmatter "$REPO_ROOT/.orchestra/devlog/2026-Q1/2026-03-28-project-kickoff.md" "Project Kickoff" 1 "$DOCS/devlog/2026-03-28-project-kickoff.md"
+add_frontmatter "$REPO_ROOT/.orchestra/devlog/2026-Q1/2026-03-29-pivot-to-conduit.md" "Pivot to Conduit" 2 "$DOCS/devlog/2026-03-29-pivot-to-conduit.md"
+add_frontmatter "$REPO_ROOT/.orchestra/devlog/2026-Q1/2026-03-29-source-isolation.md" "Source Isolation" 3 "$DOCS/devlog/2026-03-29-source-isolation.md"
+add_frontmatter "$REPO_ROOT/.orchestra/devlog/2026-Q1/2026-03-29-multi-source-ingestion.md" "Multi-Source Ingestion" 4 "$DOCS/devlog/2026-03-29-multi-source-ingestion.md"
+add_frontmatter "$REPO_ROOT/.orchestra/devlog/2026-Q1/2026-03-29-zotero-adapter.md" "Zotero Adapter" 5 "$DOCS/devlog/2026-03-29-zotero-adapter.md"
+add_frontmatter "$REPO_ROOT/.orchestra/devlog/2026-Q1/2026-03-29-dropping-docs-site.md" "Dropping the Docs Site" 6 "$DOCS/devlog/2026-03-29-dropping-docs-site.md"
 
 # Learning
-pos=1
-for f in "$REPO_ROOT"/.orchestra/devlog/2026-Q1/*learning*.md; do
-  [ -f "$f" ] || continue
-  name=$(basename "$f" .md | sed 's/^2026-03-[0-9]*-learning-//')
-  add_frontmatter "$f" "$name" $pos "$DOCS/learning/$name.md"
-  pos=$((pos + 1))
-done
+add_frontmatter "$REPO_ROOT/.orchestra/devlog/2026-Q1/2026-03-29-learning-dotnet-fundamentals.md" ".NET Fundamentals" 1 "$DOCS/learning/dotnet-fundamentals.md"
+add_frontmatter "$REPO_ROOT/.orchestra/devlog/2026-Q1/2026-03-29-learning-di-and-solid.md" "DI and SOLID" 2 "$DOCS/learning/di-and-solid.md"
+add_frontmatter "$REPO_ROOT/.orchestra/devlog/2026-Q1/2026-03-29-learning-testing-patterns.md" "Testing Patterns" 3 "$DOCS/learning/testing-patterns.md"
+add_frontmatter "$REPO_ROOT/.orchestra/devlog/2026-Q1/2026-03-29-learning-project-architecture.md" "Project Architecture" 4 "$DOCS/learning/project-architecture.md"
+add_frontmatter "$REPO_ROOT/.orchestra/devlog/2026-Q1/2026-03-29-learning-code-coverage.md" "Code Coverage" 5 "$DOCS/learning/code-coverage.md"
 
 echo "Synced .orchestra/ to docs/docs/"

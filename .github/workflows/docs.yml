@@ -34,9 +34,6 @@ jobs:
         working-directory: docs
         run: npm ci
 
-      - name: Verify synced content
-        run: ls -la docs/docs/ && ls docs/docs/milestones/ && ls docs/docs/decisions/
-
       - name: Build site
         working-directory: docs
         run: npm run build
