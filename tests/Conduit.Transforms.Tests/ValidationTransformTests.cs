@@ -28,7 +28,7 @@ public class ValidationTransformTests
 
         var records = new List<TransformedRecord<IPipelineRecord>>
         {
-            new(new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+            new(new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A"))
         };
 
@@ -48,9 +48,9 @@ public class ValidationTransformTests
 
         var records = new List<TransformedRecord<IPipelineRecord>>
         {
-            new(new EnrollmentRecord("", "Doe, Jane", "18", "021",
+            new(new EnrollmentRecord("", "", true, "Doe, Jane", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A")),
-            new(new EnrollmentRecord("SUB002", "", "18", "021",
+            new(new EnrollmentRecord("SUB002", "SUB002", true, "", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-B"))
         };
 
@@ -70,10 +70,10 @@ public class ValidationTransformTests
 
         var records = new List<TransformedRecord<IPipelineRecord>>
         {
-            new(new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+            new(new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A")),  // valid
-            new(new EnrollmentRecord("", "Bad Record", "18", "021",
-                new DateTime(2026, 1, 1), null, "PLAN-B"))   // invalid — no subscriber ID
+            new(new EnrollmentRecord("", "", true, "Bad Record", "18", "021",
+                new DateTime(2026, 1, 1), null, "PLAN-B"))   // invalid — no member/subscriber ID
         };
 
         var result = await transform.ExecuteAsync(records);
@@ -94,7 +94,7 @@ public class ValidationTransformTests
 
         var records = new List<TransformedRecord<IPipelineRecord>>
         {
-            new(new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+            new(new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A"))
         };
 
@@ -118,7 +118,7 @@ public class ValidationTransformTests
 
         var records = new List<TransformedRecord<IPipelineRecord>>
         {
-            new(new EnrollmentRecord("", "Doe, Jane", "18", "999",
+            new(new EnrollmentRecord("", "", true, "Doe, Jane", "18", "999",
                 new DateTime(2026, 1, 1), null, "PLAN-A"))
         };
 

@@ -99,11 +99,11 @@ public class IntegrationTests : IDisposable
     {
         var items = new List<IPipelineRecord>
         {
-            new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A"),
-            new EnrollmentRecord("SUB001", "Doe, Jane Updated", "18", "024",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane Updated", "18", "024",
                 new DateTime(2026, 1, 1), new DateTime(2026, 3, 15), "PLAN-A"),
-            new EnrollmentRecord("SUB002", "Smith, Bob", "18", "021",
+            new EnrollmentRecord("SUB002", "SUB002", true, "Smith, Bob", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-B")
         };
 
@@ -234,23 +234,23 @@ public class IntegrationTests : IDisposable
         var records = new List<IPipelineRecord>
         {
             // Valid: addition with correct codes
-            new EnrollmentRecord("SUB001", "Smith, Alice", "18", "021",
+            new EnrollmentRecord("SUB001", "SUB001", true, "Smith, Alice", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-A"),
 
             // Valid: termination with end date after start date
-            new EnrollmentRecord("SUB002", "Jones, Bob", "01", "024",
+            new EnrollmentRecord("SUB002", "SUB001", false, "Jones, Bob", "01", "024",
                 new DateTime(2026, 1, 1), new DateTime(2026, 12, 31), "PLAN-B"),
 
             // Invalid: unknown maintenance code
-            new EnrollmentRecord("SUB003", "Bad, Record", "18", "999",
+            new EnrollmentRecord("SUB003", "SUB003", true, "Bad, Record", "18", "999",
                 new DateTime(2026, 1, 1), null, "PLAN-C"),
 
-            // Invalid: missing subscriber ID and member name
-            new EnrollmentRecord("", "", "18", "021",
+            // Invalid: missing member ID and member name
+            new EnrollmentRecord("", "", true, "", "18", "021",
                 new DateTime(2026, 1, 1), null, "PLAN-D"),
 
             // Invalid: end date before start date
-            new EnrollmentRecord("SUB005", "Date, Problem", "18", "021",
+            new EnrollmentRecord("SUB005", "SUB005", true, "Date, Problem", "18", "021",
                 new DateTime(2026, 6, 1), new DateTime(2026, 1, 1), "PLAN-E"),
         };
 
@@ -292,12 +292,12 @@ public class IntegrationTests : IDisposable
 
         var records = new List<RejectedRecord<IPipelineRecord>>
         {
-            new(new EnrollmentRecord("SUB999", "Invalid, Member", "18", "999",
+            new(new EnrollmentRecord("SUB999", "SUB999", true, "Invalid, Member", "18", "999",
                     new DateTime(2026, 1, 1), new DateTime(2025, 1, 1), "PLAN-X"),
                 ["MaintenanceTypeCode '999' is not a valid X12 code",
                  "CoverageEndDate is before CoverageStartDate"]),
 
-            new(new EnrollmentRecord("SUB888", "", "18", "021",
+            new(new EnrollmentRecord("SUB888", "SUB888", true, "", "18", "021",
                     new DateTime(2026, 1, 1), null, "PLAN-Y"),
                 ["MemberName is required"])
         };

@@ -8,7 +8,7 @@ public class EnrollmentRecordValidatorTests
     private readonly EnrollmentRecordValidator _validator = new();
 
     private static EnrollmentRecord Valid() =>
-        new("SUB001", "Doe, Jane", "18", "021", new DateTime(2026, 1, 1), null, "PLAN-A");
+        new("SUB001", "SUB001", true, "Doe, Jane", "18", "021", new DateTime(2026, 1, 1), null, "PLAN-A");
 
     [Fact]
     public void AppliesTo_EnrollmentRecord_ReturnsTrue()

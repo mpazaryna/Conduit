@@ -20,7 +20,7 @@ public class FeedItemValidatorTests
     [Fact]
     public void AppliesTo_OtherRecord_ReturnsFalse()
     {
-        var enrollment = new EnrollmentRecord("SUB001", "Doe, Jane", "18", "021",
+        var enrollment = new EnrollmentRecord("SUB001", "SUB001", true, "Doe, Jane", "18", "021",
             new DateTime(2026, 1, 1), null, "PLAN-A");
         Assert.False(_validator.AppliesTo(enrollment));
     }

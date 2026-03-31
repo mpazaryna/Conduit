@@ -21,6 +21,9 @@ public class EnrollmentRecordValidator : IRecordValidator
         var enrollment = (EnrollmentRecord)record;
         var errors = new List<string>();
 
+        if (string.IsNullOrWhiteSpace(enrollment.MemberId))
+            errors.Add("MemberId is required");
+
         if (string.IsNullOrWhiteSpace(enrollment.SubscriberId))
             errors.Add("SubscriberId is required");
 
