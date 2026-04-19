@@ -14,6 +14,18 @@ Document development work. From git commits to narrative logs. Output goes to `.
 | **Git Journal** | Summarize work from commits | "journal this", "journal today's work" |
 | **Devlog** | Narrative work documentation | "devlog", "write a devlog" |
 
+## Frontmatter Contract
+
+Every devlog file must open with YAML frontmatter:
+
+```yaml
+---
+created_on: {YYYY-MM-DD}
+---
+```
+
+No `status` or `ticket` fields — devlogs are journal entries, always complete by definition.
+
 ## How to Use This Skill
 
 1. **Identify the report type** from the request
@@ -21,7 +33,8 @@ Document development work. From git commits to narrative logs. Output goes to `.
    - Git journal → Read `${CLAUDE_SKILL_DIR}/examples/github-journal.md`
    - Devlog → Read `${CLAUDE_SKILL_DIR}/examples/devlog.md`
 3. **Follow the workflow** in that template
-4. **Generate the report** in the specified format
+4. **Write `created_on` frontmatter** at the top of every output file
+5. **Generate the report** in the specified format
 
 ## Quick Reference
 

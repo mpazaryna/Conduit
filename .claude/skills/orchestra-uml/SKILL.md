@@ -92,6 +92,10 @@ File naming: `{subject}.md` — lowercase, hyphenated, descriptive.
 
 File structure:
 ```markdown
+---
+created_on: {YYYY-MM-DD}
+---
+
 # {Title}
 
 Brief one-sentence description of what this diagram shows and why it exists.
@@ -105,6 +109,8 @@ Brief one-sentence description of what this diagram shows and why it exists.
 - Any non-obvious decisions or constraints captured here
 - What is intentionally omitted and why
 ```
+
+Every UML file carries `created_on` frontmatter. No `status` or `ticket` — diagrams are reference artifacts without a lifecycle status.
 
 Save to the correct subfolder under `.orchestra/uml/`.
 

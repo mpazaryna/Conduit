@@ -1,3 +1,9 @@
+---
+ticket: {clickup-id or slug}
+status: draft
+created_on: {YYYY-MM-DD}
+---
+
 # {Title}
 
 **Objective:** {What "done" looks like — 1-2 sentences}
